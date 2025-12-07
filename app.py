@@ -154,10 +154,10 @@ def submit_answer():
     # 更新用户进度
     progress = UserProgress.query.filter_by(user_id=user.id, question_id=question_id).first()
     if not progress:
-        progress = UserProgress(user_id=user.id, question_id=question_id)
+        progress = UserProgress(user_id=user.id, question_id=question_id, attempts=0)
         db.session.add(progress)
     
-    progress.attempts += 1
+    progress.attempts = (progress.attempts or 0) + 1
     progress.last_attempt = datetime.utcnow()
     if correct:
         progress.completed = True
