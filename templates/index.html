@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python 学习闯关平台</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🐍 Python 学习闯关平台</h1>
+            <p class="subtitle">从基础到实战，系统性学习 Python 软件测试</p>
+            <div class="user-info">
+                <span id="username-display">学习者: guest</span>
+                <button onclick="changeUsername()">更改用户名</button>
+            </div>
+        </header>
+
+        <nav class="tabs">
+            <button class="tab-btn active" onclick="showTab('levels', event)">闯关学习</button>
+            <button class="tab-btn" onclick="showTab('wrong-questions', event)">错题本</button>
+            <button class="tab-btn" onclick="showTab('progress', event)">学习进度</button>
+        </nav>
+
+        <!-- 闯关学习页面 -->
+        <div id="levels-tab" class="tab-content active">
+            <div class="progress-bar-container">
+                <div class="progress-bar">
+                    <div class="progress-bar-fill" id="overall-progress" style="width: 0%"></div>
+                </div>
+                <span id="progress-text">已完成 0%</span>
+            </div>
+
+            <div class="levels-grid" id="levels-container">
+                <div class="loading">加载中...</div>
+            </div>
+
+            <!-- 关卡详情模态框 -->
+            <div id="level-modal" class="modal">
+                <div class="modal-content">
+                    <span class="close" onclick="closeLevelModal()">&times;</span>
+                    <h2 id="level-title"></h2>
+                    <p id="level-description"></p>
+                    <div id="questions-list"></div>
+                </div>
+            </div>
+
+            <!-- 题目详情模态框 -->
+            <div id="question-modal" class="modal">
+                <div class="modal-content">
+                    <span class="close" onclick="closeQuestionModal()">&times;</span>
+                    <h2 id="question-title"></h2>
+                    <div id="question-content"></div>
+                    <div id="question-options"></div>
+                    <div id="answer-input-area"></div>
+                    <button class="btn btn-primary" onclick="submitAnswer()">提交答案</button>
+                    <div id="result-area" style="display: none;"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 错题本页面 -->
+        <div id="wrong-questions-tab" class="tab-content">
+            <h2>📝 我的错题本</h2>
+            <p class="hint">收集你做错的题目，方便复习巩固</p>
+            <div id="wrong-questions-list">
+                <div class="loading">加载中...</div>
+            </div>
+        </div>
+
+        <!-- 学习进度页面 -->
+        <div id="progress-tab" class="tab-content">
+            <h2>📊 学习进度统计</h2>
+            <div class="stats-container">
+                <div class="stat-card">
+                    <h3>总题目数</h3>
+                    <p class="stat-number" id="total-questions">0</p>
+                </div>
+                <div class="stat-card">
+                    <h3>已完成</h3>
+                    <p class="stat-number" id="completed-questions">0</p>
+                </div>
+                <div class="stat-card">
+                    <h3>完成率</h3>
+                    <p class="stat-number" id="completion-rate">0%</p>
+                </div>
+            </div>
+            <div class="progress-details">
+                <h3>关卡进度详情</h3>
+                <div id="level-progress-details"></div>
+            </div>
+        </div>
+
+        <footer>
+            <p>💡 提示：所有题目都可以重复练习，不要害怕犯错！</p>
+            <p>© 2024 Python 学习闯关平台 - 专注于软件测试方向</p>
+        </footer>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
