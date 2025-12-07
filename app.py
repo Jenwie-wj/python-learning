@@ -237,4 +237,5 @@ def init_db():
 
 if __name__ == '__main__':
     init_db()
+    # 注意：debug=True 仅用于开发环境，生产环境必须设置为 False
     app.run(debug=True, host='0.0.0.0', port=5000)
