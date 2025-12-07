@@ -54,6 +54,16 @@
                     <div id="question-content"></div>
                     <div id="question-options"></div>
                     <div id="answer-input-area"></div>
+                    <div id="code-editor-container" style="display: none;">
+                        <div class="code-editor-toolbar">
+                            <button class="btn btn-run" onclick="runCode()">▶ 运行代码</button>
+                            <span class="security-warning">⚠️ 代码将在服务器端运行，请勿执行恶意代码</span>
+                        </div>
+                        <div id="code-output" class="code-output" style="display: none;">
+                            <div class="output-header">输出结果：</div>
+                            <pre id="output-content"></pre>
+                        </div>
+                    </div>
                     <button class="btn btn-primary" onclick="submitAnswer()">提交答案</button>
                     <div id="result-area" style="display: none;"></div>
                 </div>

@@ -2,6 +2,7 @@
 let currentLevelId = null;
 let currentQuestionId = null;
 let currentUsername = 'guest';
+let codeTextarea = null; // Code editor textarea
 
 // 页面加载时初始化
 document.addEventListener('DOMContentLoaded', function() {
@@ -172,10 +173,16 @@ function openQuestion(questionId) {
             
             const optionsArea = document.getElementById('question-options');
             const answerArea = document.getElementById('answer-input-area');
+            const codeEditorContainer = document.getElementById('code-editor-container');
+            const codeOutput = document.getElementById('code-output');
             
             optionsArea.innerHTML = '';
             answerArea.innerHTML = '';
+            codeEditorContainer.style.display = 'none';
+            codeOutput.style.display = 'none';
             document.getElementById('result-area').style.display = 'none';
+            
+            codeTextarea = null;
             
             if (question.type === 'choice') {
                 // 选择题
@@ -197,8 +204,27 @@ function openQuestion(questionId) {
                 // 填空题
                 answerArea.innerHTML = '<input type="text" id="fill-answer" placeholder="请输入答案">';
             } else if (question.type === 'code') {
-                // 编程题
-                answerArea.innerHTML = '<textarea id="code-answer" rows="10" placeholder="请输入您的代码"></textarea>';
+                // 编程题 - 使用增强的 textarea
+                answerArea.innerHTML = '<textarea id="code-answer" class="code-editor-textarea" placeholder="# 在这里编写您的 Python 代码\n" rows="15" spellcheck="false"></textarea>';
+                codeEditorContainer.style.display = 'block';
+                
+                // 保存引用
+                codeTextarea = document.getElementById('code-answer');
+                
+                // 支持 Tab 键缩进
+                codeTextarea.addEventListener('keydown', function(e) {
+                    if (e.key === 'Tab') {
+                        e.preventDefault();
+                        const start = this.selectionStart;
+                        const end = this.selectionEnd;
+                        
+                        // 插入 4 个空格
+                        this.value = this.value.substring(0, start) + '    ' + this.value.substring(end);
+                        
+                        // 将光标移到插入的空格后
+                        this.selectionStart = this.selectionEnd = start + 4;
+                    }
+                });
             }
             
             document.getElementById('question-modal').style.display = 'block';
@@ -225,12 +251,12 @@ function submitAnswer() {
         answer = selectedOption.textContent.trim().charAt(0);
     } else {
         const fillAnswer = document.getElementById('fill-answer');
-        const codeAnswer = document.getElementById('code-answer');
         
         if (fillAnswer) {
             answer = fillAnswer.value.trim();
-        } else if (codeAnswer) {
-            answer = codeAnswer.value.trim();
+        } else if (codeTextarea) {
+            // 从 textarea 获取代码
+            answer = codeTextarea.value.trim();
         }
     }
     
@@ -348,4 +374,48 @@ window.onclick = function(event) {
     if (event.target === questionModal) {
         questionModal.style.display = 'none';
     }
+}
+
+// 运行代码
+function runCode() {
+    if (!codeTextarea) {
+        alert('请先打开编程题！');
+        return;
+    }
+    
+    const code = codeTextarea.value.trim();
+    if (!code) {
+        alert('请先输入代码！');
+        return;
+    }
+    
+    // 显示输出区域
+    const outputDiv = document.getElementById('code-output');
+    const outputContent = document.getElementById('output-content');
+    outputDiv.style.display = 'block';
+    outputContent.textContent = '正在运行...';
+    outputContent.style.color = '#f8f8f8';
+    
+    // 发送代码到服务器执行
+    fetch('/run_code', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ code: code })
+    })
+    .then(response => response.json())
+    .then(result => {
+        if (result.success) {
+            outputContent.textContent = result.output || '(无输出)';
+            outputContent.style.color = '#f8f8f8';
+        } else {
+            outputContent.textContent = `错误:\n${result.error}`;
+            outputContent.style.color = '#ff6b6b';
+        }
+    })
+    .catch(error => {
+        outputContent.textContent = `运行失败: ${error.message}`;
+        outputContent.style.color = '#ff6b6b';
+    });
 }

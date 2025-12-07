@@ -226,6 +226,48 @@ def set_username():
     session['username'] = username
     return jsonify({'success': True})
 
+@app.route('/run_code', methods=['POST'])
+def run_code():
+    """运行用户提交的 Python 代码"""
+    data = request.json
+    code = data.get('code', '')
+    
+    if not code:
+        return jsonify({'success': False, 'error': '代码不能为空'})
+    
+    try:
+        # 使用 io.StringIO 捕获标准输出
+        import io
+        import sys
+        
+        # 创建字符串IO对象捕获输出
+        output_buffer = io.StringIO()
+        old_stdout = sys.stdout
+        sys.stdout = output_buffer
+        
+        # 执行代码
+        # 警告：这是简化实现，生产环境必须使用沙箱！
+        exec_globals = {}
+        exec(code, exec_globals)
+        
+        # 恢复标准输出
+        sys.stdout = old_stdout
+        
+        # 获取输出
+        output = output_buffer.getvalue()
+        
+        return jsonify({
+            'success': True,
+            'output': output
+        })
+    except Exception as e:
+        # 恢复标准输出
+        sys.stdout = old_stdout
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        })
+
 def init_db():
     """初始化数据库"""
     with app.app_context():
