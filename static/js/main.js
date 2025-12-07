@@ -52,7 +52,7 @@ function changeUsername() {
 }
 
 // 切换标签页
-function showTab(tabName) {
+function showTab(tabName, event) {
     // 隐藏所有标签页内容
     document.querySelectorAll('.tab-content').forEach(tab => {
         tab.classList.remove('active');
@@ -67,7 +67,9 @@ function showTab(tabName) {
     document.getElementById(tabName + '-tab').classList.add('active');
     
     // 激活对应的按钮
-    event.target.classList.add('active');
+    if (event && event.target) {
+        event.target.classList.add('active');
+    }
     
     // 加载对应的数据
     if (tabName === 'wrong-questions') {
