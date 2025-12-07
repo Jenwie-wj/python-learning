@@ -67,10 +67,26 @@ pip install -r requirements.txt
 python app.py
 ```
 
+默认端口为 8080。如需指定其他端口，可以使用以下方式：
+
+```bash
+# 使用默认端口 8080
+python app.py
+
+# 指定自定义端口
+python app.py --port 5000
+python app.py -p 9000
+
+# 查看所有可用选项
+python app.py --help
+```
+
 4. 打开浏览器访问
 ```
-http://localhost:5000
+http://localhost:8080
 ```
+
+如果使用了自定义端口，请相应修改访问地址。
 
 ## 📖 使用指南
 

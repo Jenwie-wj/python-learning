@@ -161,6 +161,9 @@ function closeLevelModal() {
 function openQuestion(questionId) {
     currentQuestionId = questionId;
     
+    // 确保关闭关卡模态框（当从错题本打开题目时）
+    closeLevelModal();
+    
     fetch(`/question/${questionId}`)
         .then(response => response.json())
         .then(question => {
