@@ -4,6 +4,9 @@ let currentQuestionId = null;
 let currentUsername = 'guest';
 let codeTextarea = null; // Code editor textarea
 
+// 代码编辑器配置
+const CODE_INDENT_SIZE = 4; // 缩进空格数
+
 // 页面加载时初始化
 document.addEventListener('DOMContentLoaded', function() {
     loadUsername();
@@ -218,11 +221,12 @@ function openQuestion(questionId) {
                         const start = this.selectionStart;
                         const end = this.selectionEnd;
                         
-                        // 插入 4 个空格
-                        this.value = this.value.substring(0, start) + '    ' + this.value.substring(end);
+                        // 插入配置的缩进空格
+                        const indent = ' '.repeat(CODE_INDENT_SIZE);
+                        this.value = this.value.substring(0, start) + indent + this.value.substring(end);
                         
                         // 将光标移到插入的空格后
-                        this.selectionStart = this.selectionEnd = start + 4;
+                        this.selectionStart = this.selectionEnd = start + CODE_INDENT_SIZE;
                     }
                 });
             }

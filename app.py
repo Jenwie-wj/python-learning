@@ -235,23 +235,22 @@ def run_code():
     if not code:
         return jsonify({'success': False, 'error': '代码不能为空'})
     
+    # 使用 io.StringIO 捕获标准输出
+    import io
+    import sys
+    
+    # 创建字符串IO对象捕获输出
+    output_buffer = io.StringIO()
+    old_stdout = sys.stdout
+    
     try:
-        # 使用 io.StringIO 捕获标准输出
-        import io
-        import sys
-        
-        # 创建字符串IO对象捕获输出
-        output_buffer = io.StringIO()
-        old_stdout = sys.stdout
         sys.stdout = output_buffer
         
         # 执行代码
         # 警告：这是简化实现，生产环境必须使用沙箱！
+        # 建议使用 Docker 容器、RestrictedPython 或外部代码执行服务
         exec_globals = {}
         exec(code, exec_globals)
-        
-        # 恢复标准输出
-        sys.stdout = old_stdout
         
         # 获取输出
         output = output_buffer.getvalue()
@@ -261,12 +260,13 @@ def run_code():
             'output': output
         })
     except Exception as e:
-        # 恢复标准输出
-        sys.stdout = old_stdout
         return jsonify({
             'success': False,
             'error': str(e)
         })
+    finally:
+        # 确保恢复标准输出
+        sys.stdout = old_stdout
 
 def init_db():
     """初始化数据库"""
