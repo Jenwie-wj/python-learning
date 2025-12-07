@@ -8,6 +8,7 @@ from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 import json
 import os
+import argparse
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'python-learning-secret-key-2024'
@@ -236,6 +237,16 @@ def init_db():
             initialize_levels_and_questions(db, Level, Question)
 
 if __name__ == '__main__':
+    # 解析命令行参数
+    parser = argparse.ArgumentParser(description='Python 学习闯关平台')
+    parser.add_argument('--port', '-p', type=int, default=8080, 
+                        help='指定服务器运行端口 (默认: 8080)')
+    parser.add_argument('--host', type=str, default='0.0.0.0',
+                        help='指定服务器监听地址 (默认: 0.0.0.0)')
+    args = parser.parse_args()
+    
     init_db()
     # 注意：debug=True 仅用于开发环境，生产环境必须设置为 False
-    app.run(debug=True, host='0.0.0.0', port=5000)
+    print(f'🚀 服务器启动中...')
+    print(f'📡 访问地址: http://localhost:{args.port}')
+    app.run(debug=True, host=args.host, port=args.port)
