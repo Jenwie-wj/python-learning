@@ -5,6 +5,10 @@
 
 import json
 
+# 数据库版本信息 - 当添加新题目或关卡时，请更新这些数字
+EXPECTED_LEVEL_COUNT = 21
+EXPECTED_QUESTION_COUNT = 118
+
 def initialize_levels_and_questions(db, Level, Question):
     """初始化关卡和题目"""
     
