@@ -48,6 +48,36 @@ def initialize_levels_and_questions(db, Level, Question):
             answer="name = 'Python测试工程师'\nprint(type(name))\nprint(name)",
             explanation="使用引号创建字符串，type() 查看类型，print() 打印结果。",
             order=3
+        ),
+        Question(
+            level_id=level1.id,
+            question_type="choice",
+            title="选择题：整数和浮点数",
+            content="在 Python 中，以下哪个表达式的结果是浮点数类型？",
+            options=json.dumps(["A. 10 + 5", "B. 10 / 2", "C. 10 // 2", "D. 10 % 2"]),
+            answer="B",
+            explanation="在 Python 3 中，使用 / 运算符进行除法运算总是返回浮点数，即使结果是整数。// 是整数除法，% 是取余运算。",
+            order=4
+        ),
+        Question(
+            level_id=level1.id,
+            question_type="fill",
+            title="填空题：类型转换",
+            content="将字符串 '123' 转换为整数，应该使用 ______ 函数。",
+            options=None,
+            answer="int",
+            explanation="int() 函数可以将字符串或浮点数转换为整数类型。例如：int('123') 返回 123",
+            order=5
+        ),
+        Question(
+            level_id=level1.id,
+            question_type="code",
+            title="编程题：布尔类型",
+            content="创建两个布尔变量 is_passed（值为 True）和 is_failed（值为 False），并打印它们。",
+            options=None,
+            answer="is_passed = True\nis_failed = False\nprint(is_passed)\nprint(is_failed)",
+            explanation="布尔类型只有 True 和 False 两个值，注意首字母大写。",
+            order=6
         )
     ]
     
@@ -94,6 +124,36 @@ def initialize_levels_and_questions(db, Level, Question):
             answer="numbers = [1, 2, 3, 4, 5]\nfor num in numbers:\n    print(num ** 2)",
             explanation="for 循环用于遍历序列，在测试中常用于批量处理测试数据。",
             order=3
+        ),
+        Question(
+            level_id=level2.id,
+            question_type="fill",
+            title="填空题：elif 的使用",
+            content="在多个条件判断中，if 和 else 之间使用 ______ 关键字添加更多条件。",
+            options=None,
+            answer="elif",
+            explanation="elif 是 else if 的缩写，用于添加多个条件分支。",
+            order=4
+        ),
+        Question(
+            level_id=level2.id,
+            question_type="choice",
+            title="选择题：while 循环",
+            content="以下关于 while 循环的说法，哪个是正确的？",
+            options=json.dumps(["A. while 循环会执行固定次数", "B. while 循环在条件为 True 时持续执行", "C. while 循环不能使用 break", "D. while 循环必须有 else"]),
+            answer="B",
+            explanation="while 循环会在条件为 True 时持续执行，直到条件变为 False 或遇到 break 语句。",
+            order=5
+        ),
+        Question(
+            level_id=level2.id,
+            question_type="code",
+            title="编程题：range 函数",
+            content="使用 for 循环和 range() 函数打印 1 到 10 的所有偶数。",
+            options=None,
+            answer="for i in range(2, 11, 2):\n    print(i)",
+            explanation="range(start, stop, step) 可以生成指定范围和步长的数字序列。range(2, 11, 2) 会生成 2, 4, 6, 8, 10。",
+            order=6
         )
     ]
     
@@ -140,6 +200,36 @@ def initialize_levels_and_questions(db, Level, Question):
             answer="def generate_test_user(name, age):\n    return {'name': name, 'age': age}",
             explanation="函数可以返回字典，这在测试中常用于生成测试数据。",
             order=3
+        ),
+        Question(
+            level_id=level3.id,
+            question_type="choice",
+            title="选择题：函数返回值",
+            content="如果函数没有 return 语句，它会返回什么？",
+            options=json.dumps(["A. 0", "B. None", "C. False", "D. 空字符串"]),
+            answer="B",
+            explanation="没有 return 语句的函数会默认返回 None。",
+            order=4
+        ),
+        Question(
+            level_id=level3.id,
+            question_type="fill",
+            title="填空题：函数参数",
+            content="在函数定义中，设置参数默认值可以创建 ______ 参数。",
+            options=None,
+            answer="可选|默认",
+            explanation="带有默认值的参数是可选参数，调用时可以不传该参数。",
+            order=5
+        ),
+        Question(
+            level_id=level3.id,
+            question_type="code",
+            title="编程题：带默认参数的函数",
+            content="创建一个函数 run_test(test_name, retry=3)，打印测试名称和重试次数。",
+            options=None,
+            answer="def run_test(test_name, retry=3):\n    print(f'测试: {test_name}, 重试次数: {retry}')",
+            explanation="使用默认参数可以让函数更灵活，调用时可以选择性地提供参数值。",
+            order=6
         )
     ]
     
@@ -186,6 +276,26 @@ def initialize_levels_and_questions(db, Level, Question):
             answer="with open('config.txt', 'r') as f:\n    content = f.read()\n    print(content)",
             explanation="使用 read() 方法读取文件全部内容，在测试中常用于读取配置文件。",
             order=3
+        ),
+        Question(
+            level_id=level4.id,
+            question_type="fill",
+            title="填空题：文件读取方法",
+            content="要逐行读取文件内容，可以使用 ______ 方法。",
+            options=None,
+            answer="readlines|readline",
+            explanation="readlines() 读取所有行返回列表，readline() 每次读取一行。",
+            order=4
+        ),
+        Question(
+            level_id=level4.id,
+            question_type="choice",
+            title="选择题：with 语句的作用",
+            content="使用 with 语句打开文件的主要好处是什么？",
+            options=json.dumps(["A. 文件读取更快", "B. 自动关闭文件", "C. 支持更多文件格式", "D. 可以同时打开多个文件"]),
+            answer="B",
+            explanation="with 语句会在代码块结束后自动关闭文件，即使发生异常也能确保文件被关闭。",
+            order=5
         )
     ]
     
@@ -222,6 +332,36 @@ def initialize_levels_and_questions(db, Level, Question):
             answer="def safe_int_convert(value):\n    try:\n        return int(value)\n    except ValueError:\n        return None",
             explanation="使用 try-except 捕获 ValueError，使类型转换更加安全，这在处理测试数据时很重要。",
             order=2
+        ),
+        Question(
+            level_id=level5.id,
+            question_type="fill",
+            title="填空题：finally 块",
+            content="在 try-except 结构中，无论是否发生异常都会执行的代码块使用 ______ 关键字。",
+            options=None,
+            answer="finally",
+            explanation="finally 块中的代码无论是否发生异常都会执行，常用于清理资源。",
+            order=3
+        ),
+        Question(
+            level_id=level5.id,
+            question_type="choice",
+            title="选择题：自定义异常",
+            content="要抛出一个异常，使用哪个关键字？",
+            options=json.dumps(["A. throw", "B. raise", "C. error", "D. except"]),
+            answer="B",
+            explanation="Python 使用 raise 关键字抛出异常。",
+            order=4
+        ),
+        Question(
+            level_id=level5.id,
+            question_type="code",
+            title="编程题：完整的异常处理",
+            content="编写代码尝试打开并读取文件 'data.txt'，如果文件不存在则打印 '文件未找到'。",
+            options=None,
+            answer="try:\n    with open('data.txt', 'r') as f:\n        content = f.read()\n        print(content)\nexcept FileNotFoundError:\n    print('文件未找到')",
+            explanation="FileNotFoundError 是文件不存在时抛出的异常，在测试中经常需要处理文件操作的异常。",
+            order=5
         )
     ]
     
@@ -268,6 +408,26 @@ def initialize_levels_and_questions(db, Level, Question):
             answer="dict1 = {'a': 1}\ndict2 = {'b': 2}\nmerged = {**dict1, **dict2}",
             explanation="使用字典解包操作符 ** 可以方便地合并字典，这在合并测试配置时很有用。",
             order=3
+        ),
+        Question(
+            level_id=level6.id,
+            question_type="fill",
+            title="填空题：字典方法",
+            content="获取字典所有键的列表，可以使用字典的 ______ 方法。",
+            options=None,
+            answer="keys",
+            explanation="dict.keys() 返回字典所有键的视图对象，可以转换为列表使用。",
+            order=4
+        ),
+        Question(
+            level_id=level6.id,
+            question_type="choice",
+            title="选择题：列表切片",
+            content="对于列表 nums = [1, 2, 3, 4, 5]，nums[1:4] 的结果是什么？",
+            options=json.dumps(["A. [1, 2, 3]", "B. [2, 3, 4]", "C. [2, 3, 4, 5]", "D. [1, 2, 3, 4]"]),
+            answer="B",
+            explanation="切片 [start:end] 包含 start 但不包含 end，所以 [1:4] 返回索引 1、2、3 的元素。",
+            order=5
         )
     ]
     
@@ -304,6 +464,26 @@ def initialize_levels_and_questions(db, Level, Question):
             answer="def is_valid_email(email):\n    return '@' in email",
             explanation="这是一个简单的邮箱验证，实际测试中可能需要更复杂的正则表达式验证。",
             order=2
+        ),
+        Question(
+            level_id=level7.id,
+            question_type="choice",
+            title="选择题：字符串方法",
+            content="下列哪个方法可以将字符串转换为大写？",
+            options=json.dumps(["A. toUpper()", "B. upper()", "C. uppercase()", "D. Upper()"]),
+            answer="B",
+            explanation="Python 字符串的 upper() 方法将所有字符转换为大写，lower() 转换为小写。",
+            order=3
+        ),
+        Question(
+            level_id=level7.id,
+            question_type="fill",
+            title="填空题：字符串分割",
+            content="将字符串按照指定分隔符分割成列表，使用 ______ 方法。",
+            options=None,
+            answer="split",
+            explanation="split() 方法根据分隔符将字符串分割成列表，在解析测试数据时非常有用。",
+            order=4
         )
     ]
     
@@ -340,6 +520,26 @@ def initialize_levels_and_questions(db, Level, Question):
             answer="import csv\ndata = [['姓名', '年龄'], ['张三', 25], ['李四', 30]]\nwith open('users.csv', 'w', newline='', encoding='utf-8') as f:\n    writer = csv.writer(f)\n    writer.writerows(data)",
             explanation="csv.writer 可以方便地将数据写入 CSV 文件，在测试中常用于导出测试报告。",
             order=2
+        ),
+        Question(
+            level_id=level8.id,
+            question_type="fill",
+            title="填空题：CSV 读取",
+            content="使用 csv 模块读取文件时，创建阅读器使用 csv.______ 函数。",
+            options=None,
+            answer="reader",
+            explanation="csv.reader() 创建一个读取器对象，用于逐行读取 CSV 文件。",
+            order=3
+        ),
+        Question(
+            level_id=level8.id,
+            question_type="choice",
+            title="选择题：CSV 字典",
+            content="如果要以字典形式读取 CSV 文件（第一行作为键），应使用什么？",
+            options=json.dumps(["A. csv.reader", "B. csv.DictReader", "C. csv.dict", "D. csv.map"]),
+            answer="B",
+            explanation="csv.DictReader 将每行数据转换为字典，第一行作为字典的键，便于按列名访问数据。",
+            order=4
         )
     ]
     
@@ -376,6 +576,26 @@ def initialize_levels_and_questions(db, Level, Question):
             answer="import json\njson_str = '{\"status\": \"success\", \"code\": 200}'\ndata = json.loads(json_str)\nprint(data['status'])",
             explanation="在 API 测试中，经常需要解析 JSON 响应来验证测试结果。",
             order=2
+        ),
+        Question(
+            level_id=level9.id,
+            question_type="choice",
+            title="选择题：JSON 数据类型",
+            content="JSON 格式不支持以下哪种 Python 数据类型？",
+            options=json.dumps(["A. 字典", "B. 列表", "C. 元组", "D. 字符串"]),
+            answer="C",
+            explanation="JSON 不支持元组，Python 的元组会被转换为 JSON 数组（对应 Python 列表）。",
+            order=3
+        ),
+        Question(
+            level_id=level9.id,
+            question_type="code",
+            title="编程题：美化 JSON 输出",
+            content="将字典 {'name': 'Test', 'age': 20} 转换为格式化的 JSON 字符串（缩进为2个空格）。",
+            options=None,
+            answer="import json\ndata = {'name': 'Test', 'age': 20}\njson_str = json.dumps(data, indent=2, ensure_ascii=False)\nprint(json_str)",
+            explanation="indent 参数用于格式化输出，ensure_ascii=False 确保中文正常显示。",
+            order=4
         )
     ]
     
@@ -412,6 +632,26 @@ def initialize_levels_and_questions(db, Level, Question):
             answer="import re\ndef is_valid_phone(phone):\n    pattern = r'^\\d{11}$'\n    return bool(re.match(pattern, phone))",
             explanation="\\d{11} 表示匹配 11 个数字，^ 和 $ 表示字符串的开始和结束。",
             order=2
+        ),
+        Question(
+            level_id=level10.id,
+            question_type="fill",
+            title="填空题：正则匹配",
+            content="在正则表达式中，匹配任意单个字符使用 ______ 符号。",
+            options=None,
+            answer=".",
+            explanation=". 在正则表达式中匹配除换行符外的任意单个字符。",
+            order=3
+        ),
+        Question(
+            level_id=level10.id,
+            question_type="choice",
+            title="选择题：正则查找",
+            content="re.findall() 方法的作用是？",
+            options=json.dumps(["A. 查找第一个匹配项", "B. 查找所有匹配项", "C. 替换匹配项", "D. 分割字符串"]),
+            answer="B",
+            explanation="re.findall() 返回所有匹配项的列表，re.search() 返回第一个匹配。",
+            order=4
         )
     ]
     
@@ -448,6 +688,26 @@ def initialize_levels_and_questions(db, Level, Question):
             answer="import sqlite3\nconn = sqlite3.connect('test.db')\ncursor = conn.cursor()\ncursor.execute('SELECT * FROM users')\nresults = cursor.fetchall()\nconn.close()",
             explanation="这是数据库操作的基本流程：连接、执行、获取结果、关闭连接。",
             order=2
+        ),
+        Question(
+            level_id=level11.id,
+            question_type="fill",
+            title="填空题：数据库提交",
+            content="在执行 INSERT、UPDATE 等修改数据的操作后，需要调用连接对象的 ______ 方法保存更改。",
+            options=None,
+            answer="commit",
+            explanation="commit() 方法将事务提交到数据库，使更改永久生效。",
+            order=3
+        ),
+        Question(
+            level_id=level11.id,
+            question_type="choice",
+            title="选择题：SQL 注入防护",
+            content="为了防止 SQL 注入，应该使用什么方式传递参数？",
+            options=json.dumps(["A. 字符串拼接", "B. 参数化查询", "C. format 方法", "D. % 格式化"]),
+            answer="B",
+            explanation="参数化查询（使用 ? 占位符）可以有效防止 SQL 注入攻击，是最安全的方式。",
+            order=4
         )
     ]
     
@@ -484,6 +744,26 @@ def initialize_levels_and_questions(db, Level, Question):
             answer="import unittest\n\nclass TestMath(unittest.TestCase):\n    def test_add(self):\n        self.assertEqual(1 + 1, 2)",
             explanation="测试方法以 test_ 开头，使用 assertEqual 断言相等。",
             order=2
+        ),
+        Question(
+            level_id=level12.id,
+            question_type="choice",
+            title="选择题：运行测试",
+            content="如何运行 unittest 测试？",
+            options=json.dumps(["A. python test.py", "B. unittest.main()", "C. python -m unittest test.py", "D. 以上都可以"]),
+            answer="D",
+            explanation="可以直接运行脚本(包含unittest.main())，也可以使用python -m unittest命令。",
+            order=3
+        ),
+        Question(
+            level_id=level12.id,
+            question_type="fill",
+            title="填空题：测试方法命名",
+            content="unittest 中的测试方法必须以 ______ 开头才能被识别和执行。",
+            options=None,
+            answer="test_|test",
+            explanation="只有以test_开头的方法才会被unittest识别为测试方法并执行。",
+            order=4
         )
     ]
     
@@ -520,6 +800,26 @@ def initialize_levels_and_questions(db, Level, Question):
             answer="def test_list_contains(self):\n    my_list = [1, 2, 3]\n    self.assertIn(2, my_list)",
             explanation="assertIn 用于验证元素是否在容器中。",
             order=2
+        ),
+        Question(
+            level_id=level13.id,
+            question_type="fill",
+            title="填空题：断言相等",
+            content="验证两个值相等，应该使用 ______ 断言方法。",
+            options=None,
+            answer="assertEqual",
+            explanation="assertEqual(a, b) 验证 a 和 b 相等。",
+            order=3
+        ),
+        Question(
+            level_id=level13.id,
+            question_type="choice",
+            title="选择题：断言异常",
+            content="测试代码是否抛出异常，应该使用什么？",
+            options=json.dumps(["A. assertRaises", "B. assertError", "C. assertException", "D. assertThrow"]),
+            answer="A",
+            explanation="assertRaises 用于验证代码是否抛出预期的异常。",
+            order=4
         )
     ]
     
@@ -556,6 +856,26 @@ def initialize_levels_and_questions(db, Level, Question):
             answer="class TestList(unittest.TestCase):\n    def setUp(self):\n        self.data = []\n    \n    def test_append(self):\n        self.data.append(1)\n        self.assertEqual(len(self.data), 1)",
             explanation="setUp 用于准备测试数据，避免在每个测试方法中重复代码。",
             order=2
+        ),
+        Question(
+            level_id=level14.id,
+            question_type="fill",
+            title="填空题：清理方法",
+            content="在每个测试方法执行后自动运行的清理方法是 ______。",
+            options=None,
+            answer="tearDown",
+            explanation="tearDown() 用于清理测试后的资源，如关闭文件、断开数据库连接等。",
+            order=3
+        ),
+        Question(
+            level_id=level14.id,
+            question_type="choice",
+            title="选择题：类级别夹具",
+            content="只在测试类开始时执行一次的方法是？",
+            options=json.dumps(["A. setUp", "B. setUpClass", "C. classSetUp", "D. initClass"]),
+            answer="B",
+            explanation="setUpClass() 是类方法，在整个测试类开始时执行一次，tearDownClass() 在结束时执行一次。",
+            order=4
         )
     ]
     
@@ -582,6 +902,26 @@ def initialize_levels_and_questions(db, Level, Question):
             answer="def test_addition_multiple(self):\n    test_data = [(2, 3, 5), (1, 1, 2), (0, 0, 0)]\n    for a, b, expected in test_data:\n        with self.subTest(a=a, b=b):\n            self.assertEqual(a + b, expected)",
             explanation="使用 subTest 可以在一个测试方法中测试多组数据，失败时能显示具体是哪组数据。",
             order=1
+        ),
+        Question(
+            level_id=level15.id,
+            question_type="choice",
+            title="选择题：数据驱动",
+            content="数据驱动测试的主要优势是什么？",
+            options=json.dumps(["A. 代码更短", "B. 用相同逻辑测试多组数据", "C. 运行更快", "D. 不需要断言"]),
+            answer="B",
+            explanation="数据驱动测试允许使用相同的测试逻辑测试多组不同的输入数据，提高测试覆盖率。",
+            order=2
+        ),
+        Question(
+            level_id=level15.id,
+            question_type="fill",
+            title="填空题：subTest",
+            content="在一个测试方法中测试多组数据时，使用 ______ 可以在某组数据失败时继续测试其他数据。",
+            options=None,
+            answer="subTest",
+            explanation="self.subTest() 创建子测试，即使某组数据失败也会继续执行其他组的测试。",
+            order=3
         )
     ]
     
@@ -618,6 +958,26 @@ def initialize_levels_and_questions(db, Level, Question):
             answer="from unittest.mock import Mock\n\nmock_obj = Mock()\nmock_obj.get_name.return_value = 'Test User'",
             explanation="Mock 对象可以模拟任何对象的行为，return_value 设置返回值。",
             order=2
+        ),
+        Question(
+            level_id=level16.id,
+            question_type="fill",
+            title="填空题：patch 装饰器",
+            content="要临时替换模块中的函数或类，使用 ______ 装饰器。",
+            options=None,
+            answer="patch",
+            explanation="@patch 装饰器可以临时替换对象，测试结束后自动恢复。",
+            order=3
+        ),
+        Question(
+            level_id=level16.id,
+            question_type="choice",
+            title="选择题：Mock 的作用",
+            content="使用 Mock 对象的主要目的是什么？",
+            options=json.dumps(["A. 加快测试速度", "B. 隔离外部依赖", "C. 减少代码量", "D. 美化代码"]),
+            answer="B",
+            explanation="Mock 主要用于隔离外部依赖（如数据库、API等），让测试更可控和可靠。",
+            order=4
         )
     ]
     
@@ -654,6 +1014,26 @@ def initialize_levels_and_questions(db, Level, Question):
             answer="import requests\n\nresponse = requests.get('https://api.example.com/users')\nassert response.status_code == 200",
             explanation="这是 API 测试的基本模式：发送请求、验证响应。",
             order=2
+        ),
+        Question(
+            level_id=level17.id,
+            question_type="choice",
+            title="选择题：HTTP 方法",
+            content="以下哪个不是常见的 HTTP 请求方法？",
+            options=json.dumps(["A. GET", "B. POST", "C. FETCH", "D. DELETE"]),
+            answer="C",
+            explanation="常见的 HTTP 方法有 GET、POST、PUT、DELETE、PATCH 等，没有 FETCH 方法。",
+            order=3
+        ),
+        Question(
+            level_id=level17.id,
+            question_type="code",
+            title="编程题：POST 请求",
+            content="使用 requests 发送 POST 请求，提交 JSON 数据 {'name': 'Test', 'age': 25}。",
+            options=None,
+            answer="import requests\n\ndata = {'name': 'Test', 'age': 25}\nresponse = requests.post('https://api.example.com/users', json=data)",
+            explanation="json 参数会自动将字典转换为 JSON 格式并设置正确的 Content-Type。",
+            order=4
         )
     ]
     
@@ -690,6 +1070,26 @@ def initialize_levels_and_questions(db, Level, Question):
             answer="import unittest\n\nsuite = unittest.TestLoader().loadTestsFromTestCase(TestMath)\nrunner = unittest.TextTestRunner(verbosity=2)\nrunner.run(suite)",
             explanation="TestLoader 加载测试用例，TextTestRunner 执行测试并输出结果。",
             order=2
+        ),
+        Question(
+            level_id=level18.id,
+            question_type="fill",
+            title="填空题：测试详细度",
+            content="TextTestRunner 的 ______ 参数控制输出的详细程度，值越大越详细。",
+            options=None,
+            answer="verbosity",
+            explanation="verbosity=0 只输出结果，verbosity=1 输出点，verbosity=2 输出详细信息。",
+            order=3
+        ),
+        Question(
+            level_id=level18.id,
+            question_type="choice",
+            title="选择题：HTML 报告",
+            content="要生成 HTML 格式的测试报告，通常使用哪个第三方库？",
+            options=json.dumps(["A. unittest-html", "B. HTMLTestRunner", "C. pytest-html", "D. 以上都可以"]),
+            answer="D",
+            explanation="HTMLTestRunner、pytest-html 等都可以生成 HTML 格式的测试报告。",
+            order=4
         )
     ]
     
@@ -716,6 +1116,26 @@ def initialize_levels_and_questions(db, Level, Question):
             answer="import csv\nimport sqlite3\n\ndef migrate_csv_to_db(csv_file, db_file, table_name):\n    conn = sqlite3.connect(db_file)\n    cursor = conn.cursor()\n    \n    with open(csv_file, 'r', encoding='utf-8') as f:\n        reader = csv.DictReader(f)\n        for row in reader:\n            columns = ', '.join(row.keys())\n            placeholders = ', '.join(['?'] * len(row))\n            sql = f'INSERT INTO {table_name} ({columns}) VALUES ({placeholders})'\n            cursor.execute(sql, list(row.values()))\n    \n    conn.commit()\n    conn.close()",
             explanation="这个工具结合了 CSV 读取和数据库操作，是实际工作中常见的数据迁移场景。",
             order=1
+        ),
+        Question(
+            level_id=level19.id,
+            question_type="choice",
+            title="选择题：数据迁移注意事项",
+            content="在数据迁移过程中，最需要注意的是什么？",
+            options=json.dumps(["A. 速度", "B. 数据完整性", "C. 代码简洁", "D. 界面美观"]),
+            answer="B",
+            explanation="数据迁移最重要的是确保数据完整性，不能丢失或损坏数据。",
+            order=2
+        ),
+        Question(
+            level_id=level19.id,
+            question_type="fill",
+            title="填空题：批量插入",
+            content="在 SQLite 中，批量插入多条数据使用 executemany 方法比多次调用 execute 更 ______。",
+            options=None,
+            answer="高效|快",
+            explanation="executemany 可以一次性插入多条数据，减少数据库操作次数，提高效率。",
+            order=3
         )
     ]
     
@@ -742,6 +1162,26 @@ def initialize_levels_and_questions(db, Level, Question):
             answer="import random\nimport string\n\nclass TestDataGenerator:\n    def generate_users(self, count):\n        users = []\n        for i in range(count):\n            name = f'User{i+1}'\n            age = random.randint(18, 60)\n            email = f'user{i+1}@test.com'\n            users.append({'name': name, 'age': age, 'email': email})\n        return users",
             explanation="测试数据生成器可以快速创建大量测试数据，提高测试效率。",
             order=1
+        ),
+        Question(
+            level_id=level20.id,
+            question_type="choice",
+            title="选择题：随机数据生成",
+            content="生成随机数据时，以下哪个不是好的实践？",
+            options=json.dumps(["A. 使用 random 模块", "B. 设置随机种子以便重现", "C. 每次生成完全相同的数据", "D. 生成符合实际规则的数据"]),
+            answer="C",
+            explanation="测试数据应该有一定的随机性和多样性，完全相同的数据可能无法覆盖所有场景。",
+            order=2
+        ),
+        Question(
+            level_id=level20.id,
+            question_type="fill",
+            title="填空题：Faker 库",
+            content="Python 中有一个专门用于生成假数据的第三方库叫 ______。",
+            options=None,
+            answer="Faker|faker",
+            explanation="Faker 库可以生成各种类型的假数据，如姓名、地址、电话号码等，非常适合测试使用。",
+            order=3
         )
     ]
     
@@ -843,6 +1283,26 @@ class BaseTest(unittest.TestCase):
 
 这些知识可以帮助你在实际工作中搭建自己的自动化测试框架！""",
             order=2
+        ),
+        Question(
+            level_id=level21.id,
+            question_type="choice",
+            title="选择题：测试框架设计",
+            content="设计测试框架时，以下哪个不是好的实践？",
+            options=json.dumps(["A. 提供清晰的日志", "B. 可扩展性强", "C. 硬编码所有配置", "D. 模块化设计"]),
+            answer="C",
+            explanation="配置应该灵活可配置，而不是硬编码，这样才能适应不同的测试环境。",
+            order=3
+        ),
+        Question(
+            level_id=level21.id,
+            question_type="fill",
+            title="填空题：测试框架组成",
+            content="一个完整的测试框架通常包括：测试用例管理、测试执行、测试报告和 ______。",
+            options=None,
+            answer="日志记录|配置管理|数据管理",
+            explanation="除了这些核心功能，还需要日志记录、配置管理、测试数据管理等支撑功能。",
+            order=4
         )
     ]
     
