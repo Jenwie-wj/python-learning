@@ -34,51 +34,34 @@
                 <span id="progress-text">已完成 0%</span>
             </div>
 
-            <div class="levels-grid" id="levels-container">
+            <!-- 关卡列表视图 -->
+            <div id="levels-view" class="levels-grid">
                 <div class="loading">加载中...</div>
             </div>
 
-            <!-- 关卡详情模态框 -->
-            <div id="level-modal" class="modal">
-                <div class="modal-content">
-                    <span class="close" onclick="closeLevelModal()">&times;</span>
-                    <h2 id="level-title"></h2>
-                    <p id="level-description"></p>
-                    <div id="questions-list"></div>
+            <!-- 关卡详情视图 - 题目列表和题目详情并排显示 -->
+            <div id="level-detail-view" style="display: none;">
+                <div class="level-detail-header">
+                    <button class="btn btn-back" onclick="backToLevels()">← 返回关卡列表</button>
+                    <div>
+                        <h2 id="level-title"></h2>
+                        <p id="level-description"></p>
+                    </div>
                 </div>
-            </div>
-
-            <!-- 题目详情模态框 -->
-            <div id="question-modal" class="modal">
-                <div class="modal-content">
-                    <span class="close" onclick="closeQuestionModal()">&times;</span>
-                    <h2 id="question-title"></h2>
-                    <div id="question-content"></div>
-                    <div id="question-options"></div>
-                    <div id="answer-input-area"></div>
-                    <div id="code-editor-container" style="display: none;">
-                        <div class="code-editor-toolbar">
-                            <button class="btn btn-run" onclick="runCode()">▶ 运行代码</button>
-                            <span class="security-warning">⚠️ 代码将在服务器端运行，请勿执行恶意代码</span>
-                        </div>
-                        <div id="code-output" class="code-output" style="display: none;">
-                            <div class="output-header">输出结果：</div>
-                            <pre id="output-content"></pre>
+                
+                <div class="level-detail-container">
+                    <!-- 左侧题目列表 -->
+                    <div class="questions-sidebar">
+                        <h3>题目列表</h3>
+                        <div id="questions-list"></div>
+                    </div>
+                    
+                    <!-- 右侧题目详情和答题区域 -->
+                    <div class="question-detail-area">
+                        <div id="question-detail-content">
+                            <p class="hint">请从左侧选择一个题目开始答题</p>
                         </div>
                     </div>
-                    <div class="button-group">
-                        <button class="btn btn-secondary" onclick="toggleAnswer()">
-                            <span id="answer-toggle-text">显示答案</span>
-                        </button>
-                        <button class="btn btn-primary" onclick="submitAnswer()">提交答案</button>
-                    </div>
-                    <div id="answer-area" class="answer-area" style="display: none;">
-                        <h3>📝 参考答案</h3>
-                        <div id="answer-content"></div>
-                        <h3>💡 解析</h3>
-                        <div id="answer-explanation"></div>
-                    </div>
-                    <div id="result-area" style="display: none;"></div>
                 </div>
             </div>
         </div>

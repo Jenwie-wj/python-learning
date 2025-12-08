@@ -1,4 +1,8 @@
 /* 全局样式 */
+:root {
+    --level-detail-max-height: 70vh;
+}
+
 * {
     margin: 0;
     padding: 0;
@@ -249,6 +253,120 @@ header h1 {
     color: #000;
 }
 
+/* 关卡详情视图 */
+.level-detail-header {
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #e0e0e0;
+}
+
+.level-detail-header h2 {
+    color: #333;
+    margin: 10px 0;
+    font-size: 1.8em;
+}
+
+.level-detail-header p {
+    color: #666;
+    margin: 5px 0;
+}
+
+.btn-back {
+    margin-bottom: 10px;
+}
+
+.level-detail-container {
+    display: flex;
+    gap: 20px;
+    min-height: 500px;
+}
+
+.questions-sidebar {
+    flex: 0 0 300px;
+    background: #f5f5f5;
+    border-radius: 10px;
+    padding: 15px;
+    max-height: var(--level-detail-max-height);
+    overflow-y: auto;
+}
+
+.questions-sidebar h3 {
+    color: #333;
+    margin-bottom: 15px;
+    font-size: 1.2em;
+    position: sticky;
+    top: 0;
+    background: #f5f5f5;
+    padding: 5px 0;
+    z-index: 10;
+}
+
+.question-detail-area {
+    flex: 1;
+    background: white;
+    border-radius: 10px;
+    padding: 20px;
+    overflow-y: auto;
+    max-height: var(--level-detail-max-height);
+}
+
+.question-detail-area h2 {
+    color: #333;
+    margin-bottom: 15px;
+    font-size: 1.6em;
+}
+
+.question-content {
+    margin: 20px 0;
+    line-height: 1.8;
+}
+
+.question-content p {
+    color: #444;
+    font-size: 1.05em;
+}
+
+.question-options {
+    margin: 20px 0;
+}
+
+.answer-input-area {
+    margin: 20px 0;
+}
+
+/* Active question item in sidebar */
+.question-item.active {
+    background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-left: 4px solid #4a5cb8;
+}
+
+.question-item.active .question-type-badge {
+    background: rgba(255, 255, 255, 0.3);
+    color: white;
+}
+
+.question-item.active:hover {
+    background: linear-gradient(90deg, #5568d3 0%, #653a8b 100%);
+    transform: translateX(5px);
+}
+
+/* Responsive design for level detail view */
+@media (max-width: 768px) {
+    .level-detail-container {
+        flex-direction: column;
+    }
+    
+    .questions-sidebar {
+        flex: 1 1 auto;
+        max-height: 300px;
+    }
+    
+    .question-detail-area {
+        max-height: none;
+    }
+}
+
 /* 题目列表 */
 .question-item {
     background: #f5f5f5;
@@ -376,6 +494,23 @@ textarea:focus, input[type="text"]:focus {
 .btn-secondary:hover {
     transform: translateY(-2px);
     box-shadow: 0 5px 15px rgba(240, 147, 251, 0.4);
+}
+
+.btn-back {
+    background: #6c757d;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.95em;
+    transition: all 0.3s;
+}
+
+.btn-back:hover {
+    background: #5a6268;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(108, 117, 125, 0.4);
 }
 
 .button-group {

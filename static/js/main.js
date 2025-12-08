@@ -14,6 +14,9 @@ const CODE_INDENT_SIZE = 4; // 缩进空格数
 // 自动打开最后访问题目的延迟时间（毫秒）
 const AUTO_RESUME_DELAY_MS = 1500;
 
+// 自动跳转下一题的延迟时间（毫秒）
+const AUTO_ADVANCE_DELAY_MS = 1500;
+
 // 页面加载时初始化
 document.addEventListener('DOMContentLoaded', function() {
     loadUsername();
@@ -95,7 +98,7 @@ function loadLevels() {
     fetch('/levels')
         .then(response => response.json())
         .then(levels => {
-            const container = document.getElementById('levels-container');
+            const container = document.getElementById('levels-view');
             container.innerHTML = '';
             
             levels.forEach(level => {
@@ -115,7 +118,7 @@ function loadLevels() {
         })
         .catch(error => {
             console.error('加载关卡失败:', error);
-            document.getElementById('levels-container').innerHTML = '<p class="hint">加载失败，请刷新页面重试</p>';
+            document.getElementById('levels-view').innerHTML = '<p class="hint">加载失败，请刷新页面重试</p>';
         });
 }
 
@@ -170,17 +173,19 @@ function openLevel(levelId) {
                 questionsList.appendChild(questionItem);
             });
             
-            document.getElementById('level-modal').style.display = 'block';
+            // Switch to level detail view
+            document.getElementById('levels-view').style.display = 'none';
+            document.getElementById('level-detail-view').style.display = 'block';
             
-            // 如果有最后访问的题目，自动打开它
-            // 延迟一小段时间，让用户看到关卡列表
-            if (level.last_question_id) {
+            // 如果有最后访问的题目，自动打开它，否则打开第一题
+            const questionToOpen = level.last_question_id || 
+                                   (level.questions.length > 0 && level.questions[0] && level.questions[0].id ? 
+                                    level.questions[0].id : null);
+            if (questionToOpen) {
+                // Small delay to let the UI settle
                 setTimeout(() => {
-                    // 只在关卡模态框仍然打开时才自动打开题目
-                    if (document.getElementById('level-modal').style.display === 'block') {
-                        openQuestion(level.last_question_id);
-                    }
-                }, AUTO_RESUME_DELAY_MS);
+                    openQuestion(questionToOpen);
+                }, 100);
             }
         })
         .catch(error => {
@@ -189,9 +194,19 @@ function openLevel(levelId) {
         });
 }
 
+// 返回关卡列表
+function backToLevels() {
+    document.getElementById('level-detail-view').style.display = 'none';
+    document.getElementById('levels-view').style.display = 'block';
+    currentLevelId = null;
+    currentQuestionId = null;
+    currentLevelQuestions = [];
+    currentQuestionIndex = -1;
+}
+
 // 关闭关卡模态框
 function closeLevelModal() {
-    document.getElementById('level-modal').style.display = 'none';
+    // No longer used - keeping for compatibility
 }
 
 // 打开题目
@@ -201,6 +216,17 @@ function openQuestion(questionId) {
     
     // Find the index of current question in the level
     currentQuestionIndex = currentLevelQuestions.findIndex(q => q.id === questionId);
+    
+    // Update active state in question list
+    document.querySelectorAll('.question-item').forEach(item => {
+        item.classList.remove('active');
+    });
+    if (currentQuestionIndex >= 0) {
+        const questionItems = document.querySelectorAll('.question-item');
+        if (questionItems.length > currentQuestionIndex) {
+            questionItems[currentQuestionIndex].classList.add('active');
+        }
+    }
     
     // 更新用户在关卡中的位置
     fetch('/update_question_position', {
@@ -213,97 +239,96 @@ function openQuestion(questionId) {
         console.error('更新题目位置失败:', error);
     });
     
-    // 确保关闭关卡模态框（当从错题本打开题目时）
-    closeLevelModal();
-    
     fetch(`/question/${questionId}`)
         .then(response => response.json())
         .then(question => {
             currentQuestionData = question; // Store question data
             
-            document.getElementById('question-title').textContent = question.title;
-            document.getElementById('question-content').innerHTML = `<p>${question.content}</p>`;
+            // Build question detail HTML
+            let questionHTML = `
+                <h2>${question.title}</h2>
+                <div class="question-content">
+                    <p>${question.content}</p>
+                </div>
+            `;
             
-            const optionsArea = document.getElementById('question-options');
-            const answerArea = document.getElementById('answer-input-area');
-            const codeEditorContainer = document.getElementById('code-editor-container');
-            const codeOutput = document.getElementById('code-output');
-            const answerDisplayArea = document.getElementById('answer-area');
-            
-            optionsArea.innerHTML = '';
-            answerArea.innerHTML = '';
-            codeEditorContainer.style.display = 'none';
-            codeOutput.style.display = 'none';
-            document.getElementById('result-area').style.display = 'none';
-            answerDisplayArea.style.display = 'none';
-            document.getElementById('answer-toggle-text').textContent = '显示答案';
-            
-            codeTextarea = null;
-            
+            // Add question-specific interface based on type
             if (question.type === 'choice') {
-                // 选择题
+                questionHTML += '<div id="question-options" class="question-options">';
                 question.options.forEach((option, index) => {
-                    const optionDiv = document.createElement('div');
-                    optionDiv.className = 'option';
-                    optionDiv.textContent = option;
-                    optionDiv.onclick = function() {
-                        // 移除其他选项的选中状态
-                        document.querySelectorAll('.option').forEach(opt => {
-                            opt.classList.remove('selected');
-                        });
-                        // 选中当前选项
-                        this.classList.add('selected');
-                    };
-                    optionsArea.appendChild(optionDiv);
+                    questionHTML += `
+                        <div class="option" onclick="selectOption(this)">
+                            ${option}
+                        </div>
+                    `;
                 });
+                questionHTML += '</div>';
             } else if (question.type === 'fill') {
-                // 填空题 - 使用代码编辑器样式的 textarea
-                answerArea.innerHTML = '<textarea id="fill-answer" class="code-editor-textarea" placeholder="# 在这里输入您的答案\n" rows="5" spellcheck="false"></textarea>';
-                
-                // 保存引用
-                codeTextarea = document.getElementById('fill-answer');
-                
-                // 支持 Tab 键缩进
-                codeTextarea.addEventListener('keydown', function(e) {
-                    if (e.key === 'Tab') {
-                        e.preventDefault();
-                        const start = this.selectionStart;
-                        const end = this.selectionEnd;
-                        
-                        // 插入配置的缩进空格
-                        const indent = ' '.repeat(CODE_INDENT_SIZE);
-                        this.value = this.value.substring(0, start) + indent + this.value.substring(end);
-                        
-                        // 将光标移到插入的空格后
-                        this.selectionStart = this.selectionEnd = start + CODE_INDENT_SIZE;
-                    }
-                });
+                questionHTML += `
+                    <div class="answer-input-area">
+                        <textarea id="fill-answer" class="code-editor-textarea" placeholder="# 在这里输入您的答案\n" rows="5" spellcheck="false"></textarea>
+                    </div>
+                `;
             } else if (question.type === 'code') {
-                // 编程题 - 使用增强的 textarea
-                answerArea.innerHTML = '<textarea id="code-answer" class="code-editor-textarea" placeholder="# 在这里编写您的 Python 代码\n" rows="15" spellcheck="false"></textarea>';
-                codeEditorContainer.style.display = 'block';
-                
-                // 保存引用
-                codeTextarea = document.getElementById('code-answer');
-                
-                // 支持 Tab 键缩进
-                codeTextarea.addEventListener('keydown', function(e) {
-                    if (e.key === 'Tab') {
-                        e.preventDefault();
-                        const start = this.selectionStart;
-                        const end = this.selectionEnd;
-                        
-                        // 插入配置的缩进空格
-                        const indent = ' '.repeat(CODE_INDENT_SIZE);
-                        this.value = this.value.substring(0, start) + indent + this.value.substring(end);
-                        
-                        // 将光标移到插入的空格后
-                        this.selectionStart = this.selectionEnd = start + CODE_INDENT_SIZE;
-                    }
-                });
+                questionHTML += `
+                    <div class="answer-input-area">
+                        <textarea id="code-answer" class="code-editor-textarea" placeholder="# 在这里编写您的 Python 代码\n" rows="15" spellcheck="false"></textarea>
+                    </div>
+                    <div class="code-editor-toolbar">
+                        <button class="btn btn-run" onclick="runCode()">▶ 运行代码</button>
+                        <span class="security-warning">⚠️ 代码将在服务器端运行，请勿执行恶意代码</span>
+                    </div>
+                    <div id="code-output" class="code-output" style="display: none;">
+                        <div class="output-header">输出结果：</div>
+                        <pre id="output-content"></pre>
+                    </div>
+                `;
             }
             
-            document.getElementById('question-modal').style.display = 'block';
+            // Add button group
+            questionHTML += `
+                <div class="button-group">
+                    <button class="btn btn-secondary" onclick="toggleAnswer()">
+                        <span id="answer-toggle-text">显示答案</span>
+                    </button>
+                    <button class="btn btn-primary" onclick="submitAnswer()">提交答案</button>
+                </div>
+                <div id="answer-area" class="answer-area" style="display: none;">
+                    <h3>📝 参考答案</h3>
+                    <div id="answer-content"></div>
+                    <h3>💡 解析</h3>
+                    <div id="answer-explanation"></div>
+                </div>
+                <div id="result-area" style="display: none;"></div>
+            `;
+            
+            // Update the question detail area
+            document.getElementById('question-detail-content').innerHTML = questionHTML;
+            
+            // Setup code editor if needed
+            codeTextarea = null;
+            if (question.type === 'fill' || question.type === 'code') {
+                const textareaId = question.type === 'fill' ? 'fill-answer' : 'code-answer';
+                codeTextarea = document.getElementById(textareaId);
+                
+                if (codeTextarea) {
+                    // 支持 Tab 键缩进
+                    codeTextarea.addEventListener('keydown', function(e) {
+                        if (e.key === 'Tab') {
+                            e.preventDefault();
+                            const start = this.selectionStart;
+                            const end = this.selectionEnd;
+                            
+                            // 插入配置的缩进空格
+                            const indent = ' '.repeat(CODE_INDENT_SIZE);
+                            this.value = this.value.substring(0, start) + indent + this.value.substring(end);
+                            
+                            // 将光标移到插入的空格后
+                            this.selectionStart = this.selectionEnd = start + CODE_INDENT_SIZE;
+                        }
+                    });
+                }
+            }
         })
         .catch(error => {
             console.error('加载题目失败:', error);
@@ -311,9 +336,19 @@ function openQuestion(questionId) {
         });
 }
 
+// 选择选项
+function selectOption(element) {
+    // 移除其他选项的选中状态
+    document.querySelectorAll('.option').forEach(opt => {
+        opt.classList.remove('selected');
+    });
+    // 选中当前选项
+    element.classList.add('selected');
+}
+
 // 关闭题目模态框
 function closeQuestionModal() {
-    document.getElementById('question-modal').style.display = 'none';
+    // No longer used - keeping for compatibility
 }
 
 // 提交答案
@@ -357,19 +392,28 @@ function submitAnswer() {
                                currentQuestionIndex >= 0 && 
                                currentQuestionIndex < currentLevelQuestions.length - 1;
         
-        // Create next question button HTML if there's a next question
-        const nextQuestionBtn = hasNextQuestion 
-            ? '<button class="btn btn-primary" onclick="goToNextQuestion()" style="margin-top: 15px;">下一题 →</button>'
-            : '<p class="hint" style="margin-top: 15px;">🎉 恭喜！你已完成本关卡所有题目</p>';
-        
         if (result.correct) {
             resultArea.className = 'result correct';
             resultArea.innerHTML = `
                 <h3>✅ 回答正确！</h3>
                 <p>${result.explanation || '继续加油！'}</p>
-                ${nextQuestionBtn}
             `;
+            
+            // Auto-advance to next question after a short delay
+            if (hasNextQuestion) {
+                resultArea.innerHTML += '<p class="hint">正在跳转到下一题...</p>';
+                setTimeout(() => {
+                    goToNextQuestion();
+                }, AUTO_ADVANCE_DELAY_MS);
+            } else {
+                resultArea.innerHTML += '<p class="hint">🎉 恭喜！你已完成本关卡所有题目</p>';
+            }
         } else {
+            // Create manual next question button for wrong answers
+            const nextQuestionBtn = hasNextQuestion 
+                ? '<button class="btn btn-primary" onclick="goToNextQuestion()" style="margin-top: 15px;">下一题 →</button>'
+                : '<p class="hint" style="margin-top: 15px;">🎉 恭喜！你已完成本关卡所有题目</p>';
+            
             resultArea.className = 'result wrong';
             resultArea.innerHTML = `
                 <h3>❌ 回答错误</h3>
@@ -470,7 +514,7 @@ function loadWrongQuestions() {
             wrongQuestions.forEach(wq => {
                 const card = document.createElement('div');
                 card.className = 'wrong-question-card';
-                card.onclick = () => openQuestion(wq.question_id);
+                card.onclick = () => openQuestionFromWrongBook(wq.question_id);
                 
                 card.innerHTML = `
                     <h4>${wq.question}</h4>
@@ -491,17 +535,40 @@ function loadWrongQuestions() {
         });
 }
 
-// 点击模态框外部关闭
+// 从错题本打开题目 - 需要先加载关卡信息
+function openQuestionFromWrongBook(questionId) {
+    // First get the question to find its level
+    fetch(`/question/${questionId}`)
+        .then(response => response.json())
+        .then(question => {
+            // Get level info from question
+            fetch(`/level/${question.level_id}`)
+                .then(response => response.json())
+                .then(level => {
+                    // Switch to levels tab - select the specific levels tab button
+                    const levelsTabBtn = document.querySelector('.tab-btn');
+                    if (levelsTabBtn) {
+                        showTab('levels', { target: levelsTabBtn });
+                    }
+                    
+                    // Open the level
+                    openLevel(level.id);
+                    
+                    // After a short delay, open the specific question
+                    setTimeout(() => {
+                        openQuestion(questionId);
+                    }, 200);
+                });
+        })
+        .catch(error => {
+            console.error('从错题本打开题目失败:', error);
+            alert('加载失败，请重试');
+        });
+}
+
+// 点击模态框外部关闭 - no longer used but keeping for compatibility
 window.onclick = function(event) {
-    const levelModal = document.getElementById('level-modal');
-    const questionModal = document.getElementById('question-modal');
-    
-    if (event.target === levelModal) {
-        levelModal.style.display = 'none';
-    }
-    if (event.target === questionModal) {
-        questionModal.style.display = 'none';
-    }
+    // Modals have been removed - this is kept for backward compatibility
 }
 
 // 运行代码

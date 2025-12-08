@@ -132,6 +132,7 @@ def get_question(question_id):
     
     return jsonify({
         'id': question.id,
+        'level_id': question.level_id,
         'type': question.question_type,
         'title': question.title,
         'content': question.content,
