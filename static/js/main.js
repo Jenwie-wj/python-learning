@@ -14,6 +14,9 @@ const CODE_INDENT_SIZE = 4; // 缩进空格数
 // 自动打开最后访问题目的延迟时间（毫秒）
 const AUTO_RESUME_DELAY_MS = 1500;
 
+// 自动跳转下一题的延迟时间（毫秒）
+const AUTO_ADVANCE_DELAY_MS = 1500;
+
 // 页面加载时初始化
 document.addEventListener('DOMContentLoaded', function() {
     loadUsername();
@@ -175,7 +178,9 @@ function openLevel(levelId) {
             document.getElementById('level-detail-view').style.display = 'block';
             
             // 如果有最后访问的题目，自动打开它，否则打开第一题
-            const questionToOpen = level.last_question_id || (level.questions.length > 0 ? level.questions[0].id : null);
+            const questionToOpen = level.last_question_id || 
+                                   (level.questions.length > 0 && level.questions[0] && level.questions[0].id ? 
+                                    level.questions[0].id : null);
             if (questionToOpen) {
                 // Small delay to let the UI settle
                 setTimeout(() => {
@@ -218,7 +223,7 @@ function openQuestion(questionId) {
     });
     if (currentQuestionIndex >= 0) {
         const questionItems = document.querySelectorAll('.question-item');
-        if (questionItems[currentQuestionIndex]) {
+        if (questionItems.length > currentQuestionIndex) {
             questionItems[currentQuestionIndex].classList.add('active');
         }
     }
@@ -399,7 +404,7 @@ function submitAnswer() {
                 resultArea.innerHTML += '<p class="hint">正在跳转到下一题...</p>';
                 setTimeout(() => {
                     goToNextQuestion();
-                }, 1500); // 1.5 second delay before auto-advancing
+                }, AUTO_ADVANCE_DELAY_MS);
             } else {
                 resultArea.innerHTML += '<p class="hint">🎉 恭喜！你已完成本关卡所有题目</p>';
             }
@@ -540,8 +545,11 @@ function openQuestionFromWrongBook(questionId) {
             fetch(`/level/${question.level_id}`)
                 .then(response => response.json())
                 .then(level => {
-                    // Switch to levels tab
-                    showTab('levels', { target: document.querySelector('.tab-btn:first-child') });
+                    // Switch to levels tab - select the specific levels tab button
+                    const levelsTabBtn = document.querySelector('.tab-btn');
+                    if (levelsTabBtn) {
+                        showTab('levels', { target: levelsTabBtn });
+                    }
                     
                     // Open the level
                     openLevel(level.id);
