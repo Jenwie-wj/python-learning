@@ -113,7 +113,9 @@ def get_question(question_id):
         'type': question.question_type,
         'title': question.title,
         'content': question.content,
-        'options': json.loads(question.options) if question.options else None
+        'options': json.loads(question.options) if question.options else None,
+        'answer': question.answer,
+        'explanation': question.explanation
     })
 
 @app.route('/submit', methods=['POST'])

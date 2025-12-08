@@ -347,6 +347,74 @@ textarea:focus, input[type="text"]:focus {
     box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
 }
 
+.btn-secondary {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    color: white;
+}
+
+.btn-secondary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(240, 147, 251, 0.4);
+}
+
+.button-group {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+    flex-wrap: wrap;
+}
+
+/* 答案区域 */
+.answer-area {
+    margin-top: 20px;
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 10px;
+    border-left: 5px solid #667eea;
+    animation: fadeIn 0.5s;
+}
+
+.answer-area h3 {
+    color: #667eea;
+    margin-bottom: 10px;
+    font-size: 1.1em;
+}
+
+.answer-area #answer-content {
+    background: #1e1e1e;
+    padding: 0;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    overflow-x: auto;
+}
+
+.answer-area #answer-content pre {
+    margin: 0;
+    padding: 15px;
+    background: transparent;
+}
+
+.answer-area #answer-content code {
+    font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.answer-area #answer-content:not(:has(pre)) {
+    /* For non-code answers */
+    background: white;
+    padding: 15px;
+    color: #333;
+    font-family: 'Courier New', monospace;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+.answer-area #answer-explanation {
+    color: #666;
+    line-height: 1.6;
+}
+
 /* 结果区域 */
 .result {
     margin-top: 20px;
