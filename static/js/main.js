@@ -11,6 +11,9 @@ let currentQuestionIndex = -1; // Track current question index in level
 // 代码编辑器配置
 const CODE_INDENT_SIZE = 4; // 缩进空格数
 
+// 自动打开最后访问题目的延迟时间（毫秒）
+const AUTO_RESUME_DELAY_MS = 1500;
+
 // 页面加载时初始化
 document.addEventListener('DOMContentLoaded', function() {
     loadUsername();
@@ -177,7 +180,7 @@ function openLevel(levelId) {
                     if (document.getElementById('level-modal').style.display === 'block') {
                         openQuestion(level.last_question_id);
                     }
-                }, 1500);
+                }, AUTO_RESUME_DELAY_MS);
             }
         })
         .catch(error => {
