@@ -3,6 +3,8 @@ let currentLevelId = null;
 let currentQuestionId = null;
 let currentUsername = 'guest';
 let codeTextarea = null; // Code editor textarea
+let currentQuestionData = null; // Store current question data including answer
+let isAnswerVisible = false; // Track answer visibility
 
 // 代码编辑器配置
 const CODE_INDENT_SIZE = 4; // 缩进空格数
@@ -164,6 +166,7 @@ function closeLevelModal() {
 // 打开题目
 function openQuestion(questionId) {
     currentQuestionId = questionId;
+    isAnswerVisible = false; // Reset answer visibility
     
     // 确保关闭关卡模态框（当从错题本打开题目时）
     closeLevelModal();
@@ -171,6 +174,8 @@ function openQuestion(questionId) {
     fetch(`/question/${questionId}`)
         .then(response => response.json())
         .then(question => {
+            currentQuestionData = question; // Store question data
+            
             document.getElementById('question-title').textContent = question.title;
             document.getElementById('question-content').innerHTML = `<p>${question.content}</p>`;
             
@@ -178,12 +183,15 @@ function openQuestion(questionId) {
             const answerArea = document.getElementById('answer-input-area');
             const codeEditorContainer = document.getElementById('code-editor-container');
             const codeOutput = document.getElementById('code-output');
+            const answerDisplayArea = document.getElementById('answer-area');
             
             optionsArea.innerHTML = '';
             answerArea.innerHTML = '';
             codeEditorContainer.style.display = 'none';
             codeOutput.style.display = 'none';
             document.getElementById('result-area').style.display = 'none';
+            answerDisplayArea.style.display = 'none';
+            document.getElementById('answer-toggle-text').textContent = '显示答案';
             
             codeTextarea = null;
             
@@ -204,8 +212,27 @@ function openQuestion(questionId) {
                     optionsArea.appendChild(optionDiv);
                 });
             } else if (question.type === 'fill') {
-                // 填空题
-                answerArea.innerHTML = '<input type="text" id="fill-answer" placeholder="请输入答案">';
+                // 填空题 - 使用代码编辑器样式的 textarea
+                answerArea.innerHTML = '<textarea id="fill-answer" class="code-editor-textarea" placeholder="# 在这里输入您的答案\n" rows="5" spellcheck="false"></textarea>';
+                
+                // 保存引用
+                codeTextarea = document.getElementById('fill-answer');
+                
+                // 支持 Tab 键缩进
+                codeTextarea.addEventListener('keydown', function(e) {
+                    if (e.key === 'Tab') {
+                        e.preventDefault();
+                        const start = this.selectionStart;
+                        const end = this.selectionEnd;
+                        
+                        // 插入配置的缩进空格
+                        const indent = ' '.repeat(CODE_INDENT_SIZE);
+                        this.value = this.value.substring(0, start) + indent + this.value.substring(end);
+                        
+                        // 将光标移到插入的空格后
+                        this.selectionStart = this.selectionEnd = start + CODE_INDENT_SIZE;
+                    }
+                });
             } else if (question.type === 'code') {
                 // 编程题 - 使用增强的 textarea
                 answerArea.innerHTML = '<textarea id="code-answer" class="code-editor-textarea" placeholder="# 在这里编写您的 Python 代码\n" rows="15" spellcheck="false"></textarea>';
@@ -253,15 +280,9 @@ function submitAnswer() {
     if (selectedOption) {
         // 选择题 - 获取选项的第一个字符（A, B, C, D）
         answer = selectedOption.textContent.trim().charAt(0);
-    } else {
-        const fillAnswer = document.getElementById('fill-answer');
-        
-        if (fillAnswer) {
-            answer = fillAnswer.value.trim();
-        } else if (codeTextarea) {
-            // 从 textarea 获取代码
-            answer = codeTextarea.value.trim();
-        }
+    } else if (codeTextarea) {
+        // 从 textarea 获取代码（包括填空题和编程题）
+        answer = codeTextarea.value.trim();
     }
     
     if (!answer) {
@@ -308,6 +329,51 @@ function submitAnswer() {
         console.error('提交答案失败:', error);
         alert('提交失败，请重试');
     });
+}
+
+// 切换答案显示
+function toggleAnswer() {
+    if (!currentQuestionData) {
+        alert('请先加载题目！');
+        return;
+    }
+    
+    const answerArea = document.getElementById('answer-area');
+    const toggleText = document.getElementById('answer-toggle-text');
+    
+    isAnswerVisible = !isAnswerVisible;
+    
+    if (isAnswerVisible) {
+        // 显示答案
+        const answerContent = document.getElementById('answer-content');
+        const answer = currentQuestionData.answer || '暂无答案';
+        
+        // 对于代码类型的题目，使用语法高亮
+        if (currentQuestionData.type === 'code' || currentQuestionData.type === 'fill') {
+            answerContent.innerHTML = `<pre><code class="language-python">${escapeHtml(answer)}</code></pre>`;
+            // 应用语法高亮
+            if (typeof hljs !== 'undefined') {
+                hljs.highlightElement(answerContent.querySelector('code'));
+            }
+        } else {
+            answerContent.textContent = answer;
+        }
+        
+        document.getElementById('answer-explanation').textContent = currentQuestionData.explanation || '暂无解析';
+        answerArea.style.display = 'block';
+        toggleText.textContent = '隐藏答案';
+    } else {
+        // 隐藏答案
+        answerArea.style.display = 'none';
+        toggleText.textContent = '显示答案';
+    }
+}
+
+// HTML 转义函数
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
 }
 
 // 加载学习进度
