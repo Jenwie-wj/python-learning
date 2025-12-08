@@ -135,6 +135,12 @@ function openLevel(levelId) {
             level.questions.forEach((question, index) => {
                 const questionItem = document.createElement('div');
                 questionItem.className = 'question-item';
+                
+                // 标记最后访问的题目
+                if (level.last_question_id && question.id === level.last_question_id) {
+                    questionItem.classList.add('last-attempted');
+                }
+                
                 questionItem.onclick = () => openQuestion(question.id);
                 
                 const typeNames = {
@@ -143,9 +149,15 @@ function openLevel(levelId) {
                     'code': '编程题'
                 };
                 
+                // 添加最后访问的提示
+                const lastAttemptedBadge = (level.last_question_id && question.id === level.last_question_id) 
+                    ? '<span class="last-attempted-badge">📍 上次做到这里</span>' 
+                    : '';
+                
                 questionItem.innerHTML = `
                     <span>
                         <strong>${index + 1}.</strong> ${question.title}
+                        ${lastAttemptedBadge}
                     </span>
                     <span class="question-type-badge type-${question.type}">
                         ${typeNames[question.type]}
@@ -156,6 +168,17 @@ function openLevel(levelId) {
             });
             
             document.getElementById('level-modal').style.display = 'block';
+            
+            // 如果有最后访问的题目，自动打开它
+            // 延迟一小段时间，让用户看到关卡列表
+            if (level.last_question_id) {
+                setTimeout(() => {
+                    // 只在关卡模态框仍然打开时才自动打开题目
+                    if (document.getElementById('level-modal').style.display === 'block') {
+                        openQuestion(level.last_question_id);
+                    }
+                }, 1500);
+            }
         })
         .catch(error => {
             console.error('加载关卡详情失败:', error);
@@ -175,6 +198,17 @@ function openQuestion(questionId) {
     
     // Find the index of current question in the level
     currentQuestionIndex = currentLevelQuestions.findIndex(q => q.id === questionId);
+    
+    // 更新用户在关卡中的位置
+    fetch('/update_question_position', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ question_id: questionId })
+    }).catch(error => {
+        console.error('更新题目位置失败:', error);
+    });
     
     // 确保关闭关卡模态框（当从错题本打开题目时）
     closeLevelModal();

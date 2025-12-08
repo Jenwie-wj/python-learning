@@ -267,6 +267,27 @@ header h1 {
     transform: translateX(5px);
 }
 
+/* 最后访问的题目样式 */
+.question-item.last-attempted {
+    background: linear-gradient(90deg, #fff9c4 0%, #f5f5f5 100%);
+    border-left: 4px solid #fbc02d;
+}
+
+.question-item.last-attempted:hover {
+    background: linear-gradient(90deg, #fff59d 0%, #e0e0e0 100%);
+}
+
+.last-attempted-badge {
+    display: inline-block;
+    margin-left: 10px;
+    padding: 3px 8px;
+    background: #fbc02d;
+    color: #fff;
+    border-radius: 12px;
+    font-size: 0.75em;
+    font-weight: bold;
+}
+
 .question-type-badge {
     padding: 5px 10px;
     border-radius: 15px;
