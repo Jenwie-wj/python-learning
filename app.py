@@ -64,6 +64,14 @@ class WrongQuestion(db.Model):
     added_date = db.Column(db.DateTime, default=datetime.utcnow)
     notes = db.Column(db.Text)
 
+class LevelProgress(db.Model):
+    """关卡进度模型 - 跟踪每个关卡最后访问的题目"""
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    level_id = db.Column(db.Integer, db.ForeignKey('level.id'), nullable=False)
+    last_question_id = db.Column(db.Integer, db.ForeignKey('question.id'), nullable=True)
+    last_visit = db.Column(db.DateTime, default=datetime.utcnow)
+
 # 路由
 @app.route('/')
 def index():
@@ -89,10 +97,24 @@ def get_level(level_id):
     level = Level.query.get_or_404(level_id)
     questions = Question.query.filter_by(level_id=level_id).order_by(Question.order).all()
     
+    # 获取用户最后访问的题目
+    username = session.get('username', 'guest')
+    user = User.query.filter_by(username=username).first()
+    last_question_id = None
+    
+    if user:
+        level_progress = LevelProgress.query.filter_by(
+            user_id=user.id, 
+            level_id=level_id
+        ).first()
+        if level_progress:
+            last_question_id = level_progress.last_question_id
+    
     return jsonify({
         'id': level.id,
         'title': level.title,
         'description': level.description,
+        'last_question_id': last_question_id,
         'questions': [{
             'id': q.id,
             'type': q.question_type,
@@ -226,6 +248,49 @@ def set_username():
     data = request.json
     username = data.get('username', 'guest')
     session['username'] = username
+    return jsonify({'success': True})
+
+@app.route('/update_question_position', methods=['POST'])
+def update_question_position():
+    """更新用户在关卡中最后访问的题目位置"""
+    data = request.json
+    question_id = data.get('question_id')
+    username = session.get('username', 'guest')
+    
+    if not question_id:
+        return jsonify({'success': False, 'error': '缺少题目ID'})
+    
+    # 获取题目信息以确定关卡ID
+    question = Question.query.get(question_id)
+    if not question:
+        return jsonify({'success': False, 'error': '题目不存在'})
+    
+    # 获取或创建用户
+    user = User.query.filter_by(username=username).first()
+    if not user:
+        user = User(username=username)
+        db.session.add(user)
+        db.session.commit()
+    
+    # 更新或创建关卡进度记录
+    level_progress = LevelProgress.query.filter_by(
+        user_id=user.id,
+        level_id=question.level_id
+    ).first()
+    
+    if not level_progress:
+        level_progress = LevelProgress(
+            user_id=user.id,
+            level_id=question.level_id,
+            last_question_id=question_id
+        )
+        db.session.add(level_progress)
+    else:
+        level_progress.last_question_id = question_id
+        level_progress.last_visit = datetime.utcnow()
+    
+    db.session.commit()
+    
     return jsonify({'success': True})
 
 @app.route('/run_code', methods=['POST'])

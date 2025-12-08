@@ -78,6 +78,26 @@ def initialize_levels_and_questions(db, Level, Question):
             answer="is_passed = True\nis_failed = False\nprint(is_passed)\nprint(is_failed)",
             explanation="布尔类型只有 True 和 False 两个值，注意首字母大写。",
             order=6
+        ),
+        Question(
+            level_id=level1.id,
+            question_type="choice",
+            title="选择题：运算符优先级",
+            content="在 Python 中，以下表达式的结果是什么？2 + 3 * 4",
+            options=json.dumps(["A. 20", "B. 14", "C. 12", "D. 24"]),
+            answer="B",
+            explanation="乘法运算符的优先级高于加法运算符，所以先计算 3 * 4 = 12，然后 2 + 12 = 14。",
+            order=7
+        ),
+        Question(
+            level_id=level1.id,
+            question_type="fill",
+            title="填空题：注释的作用",
+            content="在 Python 中，使用 ______ 符号可以添加单行注释。",
+            options=None,
+            answer="#",
+            explanation="# 符号用于添加单行注释，Python 解释器会忽略 # 后面的内容。多行注释可以使用三引号 '''...''' 或 \"\"\"...\"\"\"。",
+            order=8
         )
     ]
     
@@ -154,6 +174,26 @@ def initialize_levels_and_questions(db, Level, Question):
             answer="for i in range(2, 11, 2):\n    print(i)",
             explanation="range(start, stop, step) 可以生成指定范围和步长的数字序列。range(2, 11, 2) 会生成 2, 4, 6, 8, 10。",
             order=6
+        ),
+        Question(
+            level_id=level2.id,
+            question_type="choice",
+            title="选择题：逻辑运算符",
+            content="表达式 True and False or True 的结果是什么？",
+            options=json.dumps(["A. True", "B. False", "C. 报错", "D. None"]),
+            answer="A",
+            explanation="逻辑运算符的优先级：not > and > or。先计算 True and False = False，再计算 False or True = True。",
+            order=7
+        ),
+        Question(
+            level_id=level2.id,
+            question_type="code",
+            title="编程题：多条件判断",
+            content="编写判断：如果分数大于等于90输出'优秀'，大于等于80输出'良好'，大于等于60输出'及格'，否则输出'不及格'。变量名为 score。",
+            options=None,
+            answer="if score >= 90:\n    print('优秀')\nelif score >= 80:\n    print('良好')\nelif score >= 60:\n    print('及格')\nelse:\n    print('不及格')",
+            explanation="使用多个 elif 可以处理多种情况，在测试中常用于根据不同条件执行不同的验证逻辑。",
+            order=8
         )
     ]
     
@@ -230,6 +270,26 @@ def initialize_levels_and_questions(db, Level, Question):
             answer="def run_test(test_name, retry=3):\n    print(f'测试: {test_name}, 重试次数: {retry}')",
             explanation="使用默认参数可以让函数更灵活，调用时可以选择性地提供参数值。",
             order=6
+        ),
+        Question(
+            level_id=level3.id,
+            question_type="choice",
+            title="选择题：Lambda 函数",
+            content="以下哪个是正确的 lambda 函数定义？",
+            options=json.dumps(["A. lambda x: x * 2", "B. def lambda x: x * 2", "C. lambda(x): x * 2", "D. x => x * 2"]),
+            answer="A",
+            explanation="lambda 函数的语法是：lambda 参数: 表达式。它是一种匿名函数，常用于简单的一次性函数。",
+            order=7
+        ),
+        Question(
+            level_id=level3.id,
+            question_type="code",
+            title="编程题：使用 Lambda 函数",
+            content="使用 lambda 函数和 map() 将列表 [1, 2, 3, 4] 中的每个数字乘以 2，并转换为列表输出。",
+            options=None,
+            answer="numbers = [1, 2, 3, 4]\nresult = list(map(lambda x: x * 2, numbers))\nprint(result)",
+            explanation="lambda 函数经常与 map()、filter() 等高阶函数配合使用，可以使代码更简洁。",
+            order=8
         )
     ]
     
@@ -370,8 +430,8 @@ def initialize_levels_and_questions(db, Level, Question):
     
     # 第六关：列表和字典操作
     level6 = Level(
-        title="第六关：列表和字典高级操作",
-        description="深入学习列表和字典的操作方法，为处理测试数据做准备",
+        title="第六关：列表、字典、元组和集合",
+        description="深入学习 Python 的数据结构：列表、字典、元组和集合，为处理测试数据做准备",
         order=6,
         category="基础"
     )
@@ -428,6 +488,46 @@ def initialize_levels_and_questions(db, Level, Question):
             answer="B",
             explanation="切片 [start:end] 包含 start 但不包含 end，所以 [1:4] 返回索引 1、2、3 的元素。",
             order=5
+        ),
+        Question(
+            level_id=level6.id,
+            question_type="choice",
+            title="选择题：元组的特性",
+            content="元组（tuple）和列表（list）的主要区别是什么？",
+            options=json.dumps(["A. 元组不能包含数字", "B. 元组是不可变的", "C. 元组只能有一个元素", "D. 元组不能被遍历"]),
+            answer="B",
+            explanation="元组是不可变的序列类型，一旦创建就不能修改。这在需要确保数据不被改变时很有用，比如作为字典的键。",
+            order=6
+        ),
+        Question(
+            level_id=level6.id,
+            question_type="code",
+            title="编程题：使用元组返回多个值",
+            content="创建一个函数 get_test_stats()，返回一个元组，包含三个值：测试总数10、通过数8、失败数2。",
+            options=None,
+            answer="def get_test_stats():\n    return (10, 8, 2)",
+            explanation="函数可以使用元组返回多个值，调用时可以解包：total, passed, failed = get_test_stats()",
+            order=7
+        ),
+        Question(
+            level_id=level6.id,
+            question_type="choice",
+            title="选择题：集合的特性",
+            content="集合（set）的主要特点是什么？",
+            options=json.dumps(["A. 元素有序且可重复", "B. 元素无序且不可重复", "C. 只能包含数字", "D. 可以包含列表"]),
+            answer="B",
+            explanation="集合（set）是无序的且不包含重复元素的数据结构，常用于去重和集合运算。",
+            order=8
+        ),
+        Question(
+            level_id=level6.id,
+            question_type="code",
+            title="编程题：使用集合去重",
+            content="有一个包含重复元素的列表 test_ids = [1, 2, 2, 3, 3, 4]，使用集合去除重复元素并转回列表。",
+            options=None,
+            answer="test_ids = [1, 2, 2, 3, 3, 4]\nunique_ids = list(set(test_ids))",
+            explanation="使用 set() 可以快速去除列表中的重复元素，这在处理测试数据时很实用。",
+            order=9
         )
     ]
     
