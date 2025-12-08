@@ -340,10 +340,31 @@ def init_db():
     with app.app_context():
         db.create_all()
         
-        # 如果数据库为空，添加初始关卡和题目
-        if Level.query.count() == 0:
-            from init_data import initialize_levels_and_questions
+        # 导入预期的数据统计
+        from init_data import initialize_levels_and_questions, EXPECTED_LEVEL_COUNT, EXPECTED_QUESTION_COUNT
+        
+        # 检查数据库是否需要初始化或更新
+        current_level_count = Level.query.count()
+        current_question_count = Question.query.count()
+        
+        # 如果数据库为空或者关卡/题目数量不匹配（说明有新内容添加），则重新初始化
+        if current_level_count == 0 or current_level_count != EXPECTED_LEVEL_COUNT or current_question_count != EXPECTED_QUESTION_COUNT:
+            if current_level_count > 0:
+                # 数据库已存在但数据不匹配，清空后重新初始化
+                print(f"检测到数据变化（关卡: {current_level_count}/{EXPECTED_LEVEL_COUNT}，题目: {current_question_count}/{EXPECTED_QUESTION_COUNT}），重新初始化数据库...")
+                # 删除所有数据 - 按照外键依赖顺序删除
+                UserProgress.query.delete()
+                WrongQuestion.query.delete()
+                LevelProgress.query.delete()
+                Question.query.delete()
+                Level.query.delete()
+                User.query.delete()
+                db.session.commit()
+            
+            # 初始化关卡和题目
             initialize_levels_and_questions(db, Level, Question)
+
+
 
 if __name__ == '__main__':
     # 解析命令行参数
