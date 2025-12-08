@@ -5,6 +5,8 @@ let currentUsername = 'guest';
 let codeTextarea = null; // Code editor textarea
 let currentQuestionData = null; // Store current question data including answer
 let isAnswerVisible = false; // Track answer visibility
+let currentLevelQuestions = []; // Store all questions in current level
+let currentQuestionIndex = -1; // Track current question index in level
 
 // 代码编辑器配置
 const CODE_INDENT_SIZE = 4; // 缩进空格数
@@ -121,6 +123,9 @@ function openLevel(levelId) {
     fetch(`/level/${levelId}`)
         .then(response => response.json())
         .then(level => {
+            // Store all questions in current level
+            currentLevelQuestions = level.questions;
+            
             document.getElementById('level-title').textContent = level.title;
             document.getElementById('level-description').textContent = level.description;
             
@@ -167,6 +172,9 @@ function closeLevelModal() {
 function openQuestion(questionId) {
     currentQuestionId = questionId;
     isAnswerVisible = false; // Reset answer visibility
+    
+    // Find the index of current question in the level
+    currentQuestionIndex = currentLevelQuestions.findIndex(q => q.id === questionId);
     
     // 确保关闭关卡模态框（当从错题本打开题目时）
     closeLevelModal();
@@ -306,11 +314,21 @@ function submitAnswer() {
         const resultArea = document.getElementById('result-area');
         resultArea.style.display = 'block';
         
+        // Check if there's a next question
+        const hasNextQuestion = currentQuestionIndex >= 0 && 
+                               currentQuestionIndex < currentLevelQuestions.length - 1;
+        
+        // Create next question button HTML if there's a next question
+        const nextQuestionBtn = hasNextQuestion 
+            ? '<button class="btn btn-primary" onclick="goToNextQuestion()" style="margin-top: 15px;">下一题 →</button>'
+            : '<p class="hint" style="margin-top: 15px;">🎉 恭喜！你已完成本关卡所有题目</p>';
+        
         if (result.correct) {
             resultArea.className = 'result correct';
             resultArea.innerHTML = `
                 <h3>✅ 回答正确！</h3>
                 <p>${result.explanation || '继续加油！'}</p>
+                ${nextQuestionBtn}
             `;
         } else {
             resultArea.className = 'result wrong';
@@ -319,6 +337,7 @@ function submitAnswer() {
                 <p><strong>正确答案：</strong>${result.answer}</p>
                 <p>${result.explanation || ''}</p>
                 <p class="hint">题目已添加到错题本，可以稍后复习</p>
+                ${nextQuestionBtn}
             `;
         }
         
@@ -488,4 +507,12 @@ function runCode() {
         outputContent.textContent = `运行失败: ${error.message}`;
         outputContent.style.color = '#ff6b6b';
     });
+}
+
+// 跳转到下一题
+function goToNextQuestion() {
+    if (currentQuestionIndex >= 0 && currentQuestionIndex < currentLevelQuestions.length - 1) {
+        const nextQuestion = currentLevelQuestions[currentQuestionIndex + 1];
+        openQuestion(nextQuestion.id);
+    }
 }
