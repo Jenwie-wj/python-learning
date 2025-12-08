@@ -315,7 +315,9 @@ function submitAnswer() {
         resultArea.style.display = 'block';
         
         // Check if there's a next question
-        const hasNextQuestion = currentQuestionIndex >= 0 && 
+        const hasNextQuestion = currentLevelQuestions && 
+                               currentLevelQuestions.length > 0 &&
+                               currentQuestionIndex >= 0 && 
                                currentQuestionIndex < currentLevelQuestions.length - 1;
         
         // Create next question button HTML if there's a next question
@@ -511,7 +513,10 @@ function runCode() {
 
 // 跳转到下一题
 function goToNextQuestion() {
-    if (currentQuestionIndex >= 0 && currentQuestionIndex < currentLevelQuestions.length - 1) {
+    if (currentLevelQuestions && 
+        currentLevelQuestions.length > 0 &&
+        currentQuestionIndex >= 0 && 
+        currentQuestionIndex < currentLevelQuestions.length - 1) {
         const nextQuestion = currentLevelQuestions[currentQuestionIndex + 1];
         openQuestion(nextQuestion.id);
     }
