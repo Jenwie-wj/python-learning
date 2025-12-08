@@ -484,6 +484,16 @@ def initialize_levels_and_questions(db, Level, Question):
             answer="split",
             explanation="split() 方法根据分隔符将字符串分割成列表，在解析测试数据时非常有用。",
             order=4
+        ),
+        Question(
+            level_id=level7.id,
+            question_type="code",
+            title="编程题：字符串连接",
+            content="使用 join() 方法将列表 ['Python', '测试', '工程师'] 连接成一个字符串，用空格分隔。",
+            options=None,
+            answer="words = ['Python', '测试', '工程师']\nresult = ' '.join(words)\nprint(result)",
+            explanation="join() 方法用于将列表中的字符串连接成一个字符串，参数是分隔符。",
+            order=5
         )
     ]
     
@@ -540,6 +550,16 @@ def initialize_levels_and_questions(db, Level, Question):
             answer="B",
             explanation="csv.DictReader 将每行数据转换为字典，第一行作为字典的键，便于按列名访问数据。",
             order=4
+        ),
+        Question(
+            level_id=level8.id,
+            question_type="code",
+            title="编程题：读取 CSV 文件",
+            content="使用 csv 模块读取 CSV 文件 'data.csv' 并打印每一行。",
+            options=None,
+            answer="import csv\nwith open('data.csv', 'r', encoding='utf-8') as f:\n    reader = csv.reader(f)\n    for row in reader:\n        print(row)",
+            explanation="csv.reader 创建读取器对象，可以逐行读取 CSV 文件内容。",
+            order=5
         )
     ]
     
@@ -596,6 +616,16 @@ def initialize_levels_and_questions(db, Level, Question):
             answer="import json\ndata = {'name': 'Test', 'age': 20}\njson_str = json.dumps(data, indent=2, ensure_ascii=False)\nprint(json_str)",
             explanation="indent 参数用于格式化输出，ensure_ascii=False 确保中文正常显示。",
             order=4
+        ),
+        Question(
+            level_id=level9.id,
+            question_type="choice",
+            title="选择题：JSON 文件操作",
+            content="将 Python 对象保存到 JSON 文件中，应该使用哪个方法？",
+            options=json.dumps(["A. json.dump()", "B. json.write()", "C. json.save()", "D. json.export()"]),
+            answer="A",
+            explanation="json.dump() 将对象序列化为 JSON 并写入文件，json.dumps() 则返回 JSON 字符串。",
+            order=5
         )
     ]
     
@@ -652,6 +682,16 @@ def initialize_levels_and_questions(db, Level, Question):
             answer="B",
             explanation="re.findall() 返回所有匹配项的列表，re.search() 返回第一个匹配。",
             order=4
+        ),
+        Question(
+            level_id=level10.id,
+            question_type="code",
+            title="编程题：提取邮箱",
+            content="使用正则表达式从字符串 'Contact us at test@example.com or info@test.com' 中提取所有邮箱地址。",
+            options=None,
+            answer="import re\ntext = 'Contact us at test@example.com or info@test.com'\npattern = r'\\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Z|a-z]{2,}\\b'\nemails = re.findall(pattern, text)\nprint(emails)",
+            explanation="使用正则表达式可以方便地从文本中提取符合模式的内容，在测试中常用于数据验证。",
+            order=5
         )
     ]
     
@@ -708,6 +748,16 @@ def initialize_levels_and_questions(db, Level, Question):
             answer="B",
             explanation="参数化查询（使用 ? 占位符）可以有效防止 SQL 注入攻击，是最安全的方式。",
             order=4
+        ),
+        Question(
+            level_id=level11.id,
+            question_type="code",
+            title="编程题：插入数据",
+            content="使用参数化查询向 users 表插入一条记录，姓名为 '测试用户'，年龄为 25。",
+            options=None,
+            answer="import sqlite3\nconn = sqlite3.connect('test.db')\ncursor = conn.cursor()\ncursor.execute('INSERT INTO users (name, age) VALUES (?, ?)', ('测试用户', 25))\nconn.commit()\nconn.close()",
+            explanation="参数化查询使用 ? 占位符，值通过元组传递，这是安全的数据库操作方式。",
+            order=5
         )
     ]
     
@@ -764,6 +814,16 @@ def initialize_levels_and_questions(db, Level, Question):
             answer="test_|test",
             explanation="只有以test_开头的方法才会被unittest识别为测试方法并执行。",
             order=4
+        ),
+        Question(
+            level_id=level12.id,
+            question_type="choice",
+            title="选择题：断言方法",
+            content="unittest 中用于断言两个值相等的方法是？",
+            options=json.dumps(["A. assertEquals()", "B. assertEqual()", "C. assertSame()", "D. assertEquals()"]),
+            answer="B",
+            explanation="assertEqual() 是 unittest 中用于断言两个值相等的标准方法。",
+            order=5
         )
     ]
     
@@ -820,6 +880,16 @@ def initialize_levels_and_questions(db, Level, Question):
             answer="A",
             explanation="assertRaises 用于验证代码是否抛出预期的异常。",
             order=4
+        ),
+        Question(
+            level_id=level13.id,
+            question_type="code",
+            title="编程题：断言不等",
+            content="编写测试方法验证 5 不等于 3，使用 assertNotEqual 方法。",
+            options=None,
+            answer="def test_not_equal(self):\n    self.assertNotEqual(5, 3)",
+            explanation="assertNotEqual() 用于验证两个值不相等。",
+            order=5
         )
     ]
     
@@ -876,6 +946,16 @@ def initialize_levels_and_questions(db, Level, Question):
             answer="B",
             explanation="setUpClass() 是类方法，在整个测试类开始时执行一次，tearDownClass() 在结束时执行一次。",
             order=4
+        ),
+        Question(
+            level_id=level14.id,
+            question_type="code",
+            title="编程题：tearDown 清理",
+            content="编写 tearDown 方法，关闭一个文件句柄 self.file（假设已在 setUp 中打开）。",
+            options=None,
+            answer="def tearDown(self):\n    if hasattr(self, 'file') and self.file:\n        self.file.close()",
+            explanation="tearDown 用于清理测试后的资源，确保测试环境干净。",
+            order=5
         )
     ]
     
@@ -922,6 +1002,26 @@ def initialize_levels_and_questions(db, Level, Question):
             answer="subTest",
             explanation="self.subTest() 创建子测试，即使某组数据失败也会继续执行其他组的测试。",
             order=3
+        ),
+        Question(
+            level_id=level15.id,
+            question_type="choice",
+            title="选择题：参数化库",
+            content="在 unittest 中实现参数化测试，除了 subTest，还可以使用哪个第三方库？",
+            options=json.dumps(["A. parameterized", "B. pytest-parametrize", "C. params", "D. testdata"]),
+            answer="A",
+            explanation="parameterized 是一个流行的第三方库，可以为 unittest 提供参数化测试功能。",
+            order=4
+        ),
+        Question(
+            level_id=level15.id,
+            question_type="code",
+            title="编程题：从文件读取测试数据",
+            content="编写代码从 CSV 文件读取测试数据并进行测试（示例框架）。",
+            options=None,
+            answer="import csv\nimport unittest\n\nclass TestWithCSV(unittest.TestCase):\n    def test_from_csv(self):\n        with open('test_data.csv', 'r') as f:\n            reader = csv.DictReader(f)\n            for row in reader:\n                with self.subTest(row=row):\n                    # 执行测试逻辑\n                    pass",
+            explanation="数据驱动测试可以从外部文件（如CSV）读取测试数据，使测试更灵活。",
+            order=5
         )
     ]
     
@@ -978,6 +1078,16 @@ def initialize_levels_and_questions(db, Level, Question):
             answer="B",
             explanation="Mock 主要用于隔离外部依赖（如数据库、API等），让测试更可控和可靠。",
             order=4
+        ),
+        Question(
+            level_id=level16.id,
+            question_type="code",
+            title="编程题：patch 上下文管理器",
+            content="使用 patch 作为上下文管理器，模拟 random.randint 返回固定值 5。",
+            options=None,
+            answer="from unittest.mock import patch\n\nwith patch('random.randint', return_value=5):\n    import random\n    result = random.randint(1, 10)\n    print(result)  # 输出 5",
+            explanation="patch 可以作为装饰器或上下文管理器使用，临时替换函数或方法的行为。",
+            order=5
         )
     ]
     
@@ -1034,6 +1144,16 @@ def initialize_levels_and_questions(db, Level, Question):
             answer="import requests\n\ndata = {'name': 'Test', 'age': 25}\nresponse = requests.post('https://api.example.com/users', json=data)",
             explanation="json 参数会自动将字典转换为 JSON 格式并设置正确的 Content-Type。",
             order=4
+        ),
+        Question(
+            level_id=level17.id,
+            question_type="fill",
+            title="填空题：HTTP 响应",
+            content="使用 requests 发送请求后，通过 response.______ 属性获取 JSON 格式的响应数据。",
+            options=None,
+            answer="json()",
+            explanation="response.json() 方法将响应体解析为 JSON 对象（Python 字典或列表）。",
+            order=5
         )
     ]
     
@@ -1090,6 +1210,16 @@ def initialize_levels_and_questions(db, Level, Question):
             answer="D",
             explanation="HTMLTestRunner、pytest-html 等都可以生成 HTML 格式的测试报告。",
             order=4
+        ),
+        Question(
+            level_id=level18.id,
+            question_type="code",
+            title="编程题：自定义测试结果",
+            content="创建一个继承自 unittest.TestResult 的自定义结果类，重写 addSuccess 方法打印成功消息。",
+            options=None,
+            answer="import unittest\n\nclass CustomResult(unittest.TestResult):\n    def addSuccess(self, test):\n        super().addSuccess(test)\n        print(f'测试成功: {test}')",
+            explanation="可以通过继承 TestResult 来自定义测试结果的处理方式。",
+            order=5
         )
     ]
     
@@ -1136,6 +1266,26 @@ def initialize_levels_and_questions(db, Level, Question):
             answer="高效|快",
             explanation="executemany 可以一次性插入多条数据，减少数据库操作次数，提高效率。",
             order=3
+        ),
+        Question(
+            level_id=level19.id,
+            question_type="choice",
+            title="选择题：数据验证",
+            content="数据迁移前应该做什么？",
+            options=json.dumps(["A. 直接开始迁移", "B. 验证源数据格式", "C. 删除目标数据", "D. 不需要准备"]),
+            answer="B",
+            explanation="迁移前应验证源数据的格式和完整性，确保迁移过程顺利。",
+            order=4
+        ),
+        Question(
+            level_id=level19.id,
+            question_type="code",
+            title="编程题：数据迁移错误处理",
+            content="为数据迁移添加错误处理，记录失败的行。",
+            options=None,
+            answer="import csv\nimport sqlite3\n\nfailed_rows = []\nwith open('data.csv', 'r') as f:\n    reader = csv.DictReader(f)\n    for row in reader:\n        try:\n            # 插入数据逻辑\n            pass\n        except Exception as e:\n            failed_rows.append({'row': row, 'error': str(e)})\nprint(f'失败记录数: {len(failed_rows)}')",
+            explanation="在数据迁移中，应该记录失败的记录以便后续处理。",
+            order=5
         )
     ]
     
@@ -1182,6 +1332,26 @@ def initialize_levels_and_questions(db, Level, Question):
             answer="Faker|faker",
             explanation="Faker 库可以生成各种类型的假数据，如姓名、地址、电话号码等，非常适合测试使用。",
             order=3
+        ),
+        Question(
+            level_id=level20.id,
+            question_type="code",
+            title="编程题：生成随机密码",
+            content="编写函数 generate_password(length=8)，生成指定长度的随机密码（包含字母和数字）。",
+            options=None,
+            answer="import random\nimport string\n\ndef generate_password(length=8):\n    chars = string.ascii_letters + string.digits\n    return ''.join(random.choice(chars) for _ in range(length))",
+            explanation="使用 random 和 string 模块可以生成各种随机测试数据。",
+            order=4
+        ),
+        Question(
+            level_id=level20.id,
+            question_type="choice",
+            title="选择题：数据生成策略",
+            content="在生成测试数据时，哪种策略最好？",
+            options=json.dumps(["A. 只生成正常数据", "B. 只生成边界数据", "C. 混合正常、边界和异常数据", "D. 随意生成"]),
+            answer="C",
+            explanation="好的测试数据应该包含正常、边界和异常情况，以充分测试系统的健壮性。",
+            order=5
         )
     ]
     
@@ -1303,6 +1473,16 @@ class BaseTest(unittest.TestCase):
             answer="日志记录|配置管理|数据管理",
             explanation="除了这些核心功能，还需要日志记录、配置管理、测试数据管理等支撑功能。",
             order=4
+        ),
+        Question(
+            level_id=level21.id,
+            question_type="choice",
+            title="选择题：框架最佳实践",
+            content="测试框架应该具备哪个特性？",
+            options=json.dumps(["A. 易于使用", "B. 可维护性强", "C. 支持扩展", "D. 以上都是"]),
+            answer="D",
+            explanation="优秀的测试框架应该易于使用、可维护性强、支持扩展，满足各种测试需求。",
+            order=5
         )
     ]
     
